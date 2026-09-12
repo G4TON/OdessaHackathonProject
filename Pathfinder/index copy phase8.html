@@ -1,0 +1,2436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pathfinder — Career Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #FAF6EF;
+    --ink: #20263B;
+    --ink-soft: #545B72;
+    --rust: #C6712F;
+    --teal: #1F6F63;
+    --line: #DDD4C0;
+    --card: #FFFFFF;
+    --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-body); line-height: 1.5; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 48px 24px 96px; min-height: 100vh; }
+  .compass { width: 34px; height: 34px; border: 2px solid var(--ink); border-radius: 50%; position: relative; flex-shrink: 0; }
+  .compass::before { content: ""; position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 13px solid var(--rust); transform: translate(-50%, -85%) rotate(28deg); }
+  .brandrow { display: flex; align-items: center; gap: 12px; margin-bottom: 56px; }
+  .brandrow span { font-family: var(--font-display); font-weight: 600; font-size: 20px; letter-spacing: 0.01em; }
+  .screen { display: none; }
+  .screen.active { display: block; animation: rise 420ms ease both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  h1 { font-family: var(--font-display); font-weight: 600; font-size: 42px; line-height: 1.12; margin: 0 0 20px; max-width: 15ch; }
+  .lede { font-size: 17px; color: var(--ink-soft); max-width: 46ch; margin: 0 0 40px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: var(--paper); border: none; padding: 14px 26px; font-family: var(--font-body); font-size: 15px; font-weight: 600; border-radius: 4px; cursor: pointer; transition: transform 120ms ease, background 120ms ease; }
+  .btn:hover { background: var(--rust); }
+  .btn:active { transform: scale(0.98); }
+  .btn:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+  .btn-ghost { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); }
+  .btn-ghost:hover { background: transparent; color: var(--ink); border-color: var(--ink); }
+  .btn-row { display: flex; gap: 12px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+  .howrow { display: flex; gap: 28px; margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .howstep { flex: 1; min-width: 160px; }
+  .howstep .n { font-family: var(--font-display); font-size: 22px; color: var(--rust); margin-bottom: 6px; }
+  .howstep p { margin: 0; font-size: 14px; color: var(--ink-soft); }
+
+  .progress-track { display: flex; gap: 6px; margin-bottom: 36px; }
+  .progress-track .seg { height: 4px; flex: 1; background: var(--line); border-radius: 2px; overflow: hidden; }
+  .progress-track .seg::after { content: ""; display: block; height: 100%; width: 0%; background: var(--rust); transition: width 300ms ease; }
+  .progress-track .seg.done::after { width: 100%; }
+  .progress-track .seg.current::after { width: 100%; background: var(--ink); }
+  .q-count { font-size: 13px; color: var(--ink-soft); margin-bottom: 10px; letter-spacing: 0.02em; }
+  .q-text { font-family: var(--font-display); font-size: 28px; font-weight: 600; margin: 0 0 28px; max-width: 22ch; }
+  .options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .option { text-align: left; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; font-family: var(--font-body); font-size: 15.5px; color: var(--ink); cursor: pointer; transition: border-color 120ms ease, background 120ms ease; }
+  .option:hover { border-color: var(--rust); }
+  .option:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+  .option.selected { border-color: var(--ink); background: #F2EEE3; }
+
+  /* Resume screen */
+  .resume-box { width: 100%; min-height: 160px; border: 1px solid var(--line); border-radius: 6px; padding: 16px; font-family: var(--font-body); font-size: 14.5px; color: var(--ink); background: var(--card); resize: vertical; margin-bottom: 8px; }
+  .resume-box:focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+  .field-hint { font-size: 13px; color: var(--ink-soft); margin-bottom: 24px; }
+
+  /* Analyzing */
+  .analyzing-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 120px 0; text-align: center; }
+  .spinner { width: 46px; height: 46px; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--rust); animation: spin 800ms linear infinite; margin-bottom: 24px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .analyzing-line { font-size: 15px; color: var(--ink-soft); }
+
+  /* Dashboard */
+  .track-tag { display: inline-block; font-size: 12.5px; font-weight: 600; letter-spacing: 0.03em; color: var(--teal); background: #E4EFEC; padding: 5px 11px; border-radius: 20px; margin-bottom: 16px; }
+  .section-title { font-family: var(--font-display); font-size: 22px; font-weight: 600; margin: 56px 0 6px; }
+  .section-sub { font-size: 14px; color: var(--ink-soft); margin: 0 0 24px; max-width: 52ch; }
+  .section-title.first { margin-top: 0; }
+
+  .fit-row { display: flex; gap: 28px; flex-wrap: wrap; align-items: center; }
+  .fit-chips { display: flex; flex-direction: column; gap: 10px; min-width: 190px; flex: 1; }
+  .fit-chip { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .fit-chip .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .fit-chip .name { flex: 1; color: var(--ink-soft); }
+  .fit-chip .pct { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .fit-chip.winner .name { color: var(--ink); font-weight: 600; }
+
+  canvas { max-width: 100%; }
+  .chart-card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 20px; display: flex; justify-content: center; }
+
+  .gap-callout { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; margin-top: 20px; font-size: 14.5px; }
+  .gap-callout strong { color: var(--rust); }
+
+  .progress-wrap { margin: 20px 0 40px; }
+  .progress-label { display: flex; justify-content: space-between; font-size: 13.5px; color: var(--ink-soft); margin-bottom: 8px; }
+  .progress-bar-outer { height: 10px; background: var(--line); border-radius: 6px; overflow: hidden; }
+  .progress-bar-inner { height: 100%; background: linear-gradient(90deg, var(--rust), var(--teal)); width: 0%; transition: width 400ms ease; }
+
+  .resource-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+  .resource { display: flex; align-items: flex-start; gap: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; }
+  .resource input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--teal); cursor: pointer; flex-shrink: 0; }
+  .resource-body { flex: 1; }
+  .resource-name { font-size: 15.5px; font-weight: 500; margin-bottom: 2px; }
+  .resource.done .resource-name { text-decoration: line-through; color: var(--ink-soft); }
+  .resource-link { font-size: 13px; }
+  .resource-link a { color: var(--rust); text-decoration: none; }
+  .resource-link a:hover { text-decoration: underline; }
+
+  .share-card { background: var(--ink); color: var(--paper); border-radius: 8px; padding: 26px; margin-top: 8px; }
+  .share-card p { color: #C9CCDA; font-size: 14px; margin: 0 0 18px; }
+
+  .empty-note { font-size: 13.5px; color: var(--ink-soft); border-top: 1px solid var(--line); padding-top: 20px; margin-top: 40px; }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 32px; }
+    .q-text { font-size: 23px; }
+    .fit-row { flex-direction: column; }
+  }
+
+  /* ---------- PHASE 1: CAREER INTELLIGENCE DASHBOARD ---------- */
+  .dashboard-shell { max-width: 1120px; margin: 0 auto; }
+  .dash-header { display:flex; justify-content:space-between; gap:24px; align-items:flex-end; margin-bottom:28px; }
+  .eyebrow { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:var(--teal); margin-bottom:8px; }
+  .dash-title { font-family:var(--font-display); font-size:42px; line-height:1.05; margin:0 0 8px; }
+  .dash-subtitle { margin:0; color:var(--ink-soft); max-width:60ch; }
+  .status-pill { display:inline-flex; align-items:center; gap:8px; background:#E4EFEC; color:var(--teal); border-radius:999px; padding:8px 12px; font-size:12px; font-weight:700; white-space:nowrap; }
+  .status-dot { width:8px; height:8px; border-radius:50%; background:var(--teal); }
+  .intel-grid { display:grid; grid-template-columns:1.45fr .75fr .75fr; gap:16px; }
+  .intel-card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:24px; box-shadow:0 8px 30px rgba(32,38,59,.05); }
+  .twin-card { background:var(--ink); color:var(--paper); border-color:var(--ink); position:relative; overflow:hidden; }
+  .twin-card::after { content:""; position:absolute; width:180px; height:180px; border:1px solid rgba(255,255,255,.10); border-radius:50%; right:-70px; top:-70px; }
+  .twin-card .eyebrow { color:#D8B38E; }
+  .twin-name { font-family:var(--font-display); font-size:32px; margin:4px 0 8px; }
+  .twin-desc { color:#C9CCDA; font-size:14px; max-width:46ch; margin:0; }
+  .metric-label { font-size:12px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.08em; font-weight:700; }
+  .metric-value { font-family:var(--font-display); font-size:42px; line-height:1; margin:10px 0 6px; }
+  .metric-note { color:var(--ink-soft); font-size:13px; margin:0; }
+  .score-track { height:7px; background:#EFE9DA; border-radius:999px; overflow:hidden; margin-top:14px; }
+  .score-fill { height:100%; border-radius:999px; background:linear-gradient(90deg,var(--rust),var(--teal)); }
+  .mission { margin-top:16px; background:#F2EEE3; border:1px solid var(--line); border-radius:12px; padding:20px 22px; display:flex; justify-content:space-between; gap:20px; align-items:center; }
+  .mission-kicker { color:var(--rust); font-size:12px; text-transform:uppercase; letter-spacing:.1em; font-weight:700; }
+  .mission h3 { font-family:var(--font-display); font-size:25px; margin:4px 0 5px; }
+  .mission p { margin:0; color:var(--ink-soft); font-size:13.5px; }
+  .mission-meta { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+  .mini-tag { display:inline-block; padding:5px 9px; border:1px solid var(--line); border-radius:999px; font-size:11px; color:var(--ink-soft); background:var(--card); }
+  .section-title.intel { margin-top:38px; }
+  .readiness-row { display:grid; grid-template-columns:1.1fr .9fr; gap:16px; align-items:stretch; }
+  .readiness-card { display:grid; grid-template-columns:150px 1fr; gap:24px; align-items:center; }
+  .score-ring { width:140px; height:140px; border-radius:50%; display:grid; place-items:center; background:conic-gradient(var(--teal) calc(var(--score)*1%), #E8E1D3 0); position:relative; }
+  .score-ring::before { content:""; width:106px; height:106px; background:var(--card); border-radius:50%; position:absolute; }
+  .score-ring span { position:relative; z-index:1; font-family:var(--font-display); font-size:34px; }
+  .readiness-copy h3 { font-family:var(--font-display); font-size:25px; margin:0 0 6px; }
+  .readiness-copy p { margin:0; color:var(--ink-soft); font-size:14px; }
+  .alternative-list { display:flex; flex-direction:column; gap:10px; margin-top:16px; }
+  .alternative { display:flex; align-items:center; gap:10px; }
+  .alternative-name { flex:1; font-size:13px; color:var(--ink-soft); }
+  .alternative-score { font-weight:700; font-size:13px; }
+  .alt-bar { width:90px; height:6px; border-radius:99px; background:#EEE8DB; overflow:hidden; }
+  .alt-bar span { display:block; height:100%; background:var(--rust); }
+  .explain-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .reason { border:1px solid var(--line); border-radius:10px; padding:15px; background:#FCFAF5; }
+  .reason strong { display:block; font-family:var(--font-display); font-size:18px; margin-bottom:3px; }
+  .reason span { font-size:12px; color:var(--ink-soft); }
+  .next-card { border-left:4px solid var(--rust); }
+  .next-card strong { font-family:var(--font-display); font-size:20px; }
+  .next-card p { margin:5px 0 0; color:var(--ink-soft); font-size:13px; }
+  @media (max-width: 800px) {
+    .intel-grid, .readiness-row { grid-template-columns:1fr; }
+    .explain-grid { grid-template-columns:1fr; }
+    .dash-header { align-items:flex-start; flex-direction:column; }
+    .mission { align-items:flex-start; flex-direction:column; }
+  }
+  @media (max-width: 520px) {
+    .dash-title { font-size:32px; }
+    .readiness-card { grid-template-columns:1fr; justify-items:center; text-align:center; }
+  }
+
+
+/* ================= PHASE 2: CAREER OS / LAPTOP-FIRST ================= */
+body:has(#screen-dashboard.active){background:#F5F1E8}
+.wrap:has(#screen-dashboard.active){max-width:none;padding:0}
+body:has(#screen-dashboard.active) .brandrow{display:none}
+
+.career-os{min-height:100vh;display:grid;grid-template-columns:232px minmax(0,1fr)}
+.os-sidebar{position:sticky;top:0;height:100vh;padding:28px 18px;background:#20263B;color:#fff;display:flex;flex-direction:column}
+.os-brand{display:flex;align-items:center;gap:10px;padding:0 8px 28px;border-bottom:1px solid rgba(255,255,255,.12)}
+.os-brand-mark{width:30px;height:30px;border:2px solid #fff;border-radius:50%;position:relative}
+.os-brand-mark:after{content:"";position:absolute;left:11px;top:5px;width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-bottom:13px solid #C6712F;transform:rotate(28deg)}
+.os-brand span{font-family:var(--font-display);font-size:21px;font-weight:600}
+.os-nav{padding-top:24px;display:flex;flex-direction:column;gap:6px}
+.os-nav button{width:100%;text-align:left;border:0;background:transparent;color:#BFC4D2;padding:11px 12px;border-radius:8px;font:600 12px var(--font-body);cursor:pointer}
+.os-nav button:hover,.os-nav button.active{background:rgba(255,255,255,.09);color:#fff}
+.os-nav button.active{box-shadow:inset 3px 0 #C6712F}
+.os-side-bottom{margin-top:auto;padding:16px 10px 4px;border-top:1px solid rgba(255,255,255,.12)}
+.os-side-bottom small{color:#9DA3B5;font-size:10px;text-transform:uppercase;letter-spacing:.1em}
+.os-side-bottom strong{display:block;margin-top:5px;font-family:var(--font-display);font-size:18px}
+.os-main{min-width:0;padding:30px 42px 70px}
+.os-content{max-width:1220px;margin:0 auto}
+.os-topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:26px}
+.os-topbar-left{display:flex;align-items:center;gap:12px}
+.os-page-label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:var(--teal)}
+.os-date{font-size:12px;color:var(--ink-soft)}
+.os-user{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--ink-soft)}
+.os-avatar{width:34px;height:34px;border-radius:50%;background:#E9DFCF;display:grid;place-items:center;color:var(--ink);font-weight:700}
+.os-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:24px}
+.os-hero h1{max-width:none;font-size:40px;margin:0 0 7px}
+.os-hero p{margin:0;color:var(--ink-soft);font-size:14px}
+.os-stat-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:14px}
+.os-card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 28px rgba(32,38,59,.055)}
+.os-stat{min-height:126px;padding:19px 20px;position:relative;overflow:hidden}
+.os-stat.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.os-stat.primary .metric-label,.os-stat.primary .metric-note{color:#BFC4D2}
+.os-stat.primary .metric-value{font-size:37px}
+.os-stat .metric-value{font-size:34px}
+.os-stat .score-track{margin-top:11px}
+.os-mini-kicker{font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#C9A57F}
+.os-twin-name{font-family:var(--font-display);font-size:24px;margin-top:4px}
+.os-stat .badge{position:absolute;top:16px;right:16px;font-size:10px;padding:5px 8px;border-radius:999px;background:#E5F0EC;color:var(--teal);font-weight:700}
+.os-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);gap:16px;margin-top:16px}
+.os-panel{padding:21px}
+.os-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:16px}
+.os-panel-head h2{font-family:var(--font-display);font-size:22px;margin:0}
+.os-panel-head p{font-size:11px;color:var(--ink-soft);margin:4px 0 0}
+.os-kicker{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--teal)}
+.os-btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px 11px;border-radius:7px;font:600 11px var(--font-body);cursor:pointer}
+.os-btn:hover{border-color:var(--rust);color:var(--rust)}
+.mission-v2{margin-top:16px;padding:20px 22px;background:#EEE8DB;border:1px solid var(--line);border-radius:14px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}
+.mission-v2 h2{font-family:var(--font-display);font-size:25px;margin:3px 0 4px}
+.mission-v2 p{color:var(--ink-soft);font-size:12.5px;margin:0;max-width:70ch}
+.mission-v2 .btn{padding:12px 18px}
+.readiness-v2{display:grid;grid-template-columns:128px 1fr;gap:18px;align-items:center}
+.score-ring{width:122px;height:122px}
+.score-ring::before{width:92px;height:92px}
+.score-ring span{font-size:29px}
+.readiness-copy h3{font-size:22px}
+.alternative-list{margin-top:12px;gap:8px}
+.alternative-name{font-size:11px}
+.alternative-score{font-size:11px}
+.alt-bar{width:70px}
+.explain-list{display:flex;flex-direction:column;gap:10px}
+.reason{display:flex;align-items:center;gap:12px;padding:11px 12px;background:#FCFAF5}
+.reason strong{font-size:15px;margin:0;min-width:26px}
+.reason span{font-size:11px}
+.roadmap{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:0;padding:10px 4px 4px}
+.roadmap:before{content:"";position:absolute;left:30px;right:30px;top:30px;height:2px;background:#DED6C7}
+.road-step{position:relative;z-index:1;text-align:center}
+.road-dot{width:40px;height:40px;border-radius:50%;margin:0 auto 10px;display:grid;place-items:center;background:#F0EADF;border:2px solid #D9CFBD;color:var(--ink-soft);font-size:11px;font-weight:700}
+.road-step.done .road-dot{background:var(--teal);border-color:var(--teal);color:#fff}
+.road-step.current .road-dot{background:var(--rust);border-color:var(--rust);color:#fff;box-shadow:0 0 0 5px rgba(198,113,47,.12)}
+.road-step strong{display:block;font-size:11px}
+.road-step span{display:block;color:var(--ink-soft);font-size:9.5px;margin-top:3px}
+.project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.project{border:1px solid var(--line);border-radius:11px;padding:16px;background:#FCFAF5;display:flex;flex-direction:column;min-height:195px;transition:transform .16s ease,box-shadow .16s ease}
+.project:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(32,38,59,.08)}
+.project-tag{display:inline-block;width:max-content;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--rust);background:#F5E9DD;padding:5px 7px;border-radius:5px}
+.project h3{font-family:var(--font-display);font-size:19px;line-height:1.15;margin:11px 0 6px}
+.project p{color:var(--ink-soft);font-size:11px;line-height:1.45;margin:0}
+.project-foot{margin-top:auto;padding-top:13px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.project-skills{font-size:9.5px;color:var(--ink-soft)}
+.project-btn{border:0;background:var(--ink);color:#fff;padding:7px 9px;border-radius:6px;font:600 10px var(--font-body);cursor:pointer}
+.project-btn:hover{background:var(--rust)}
+.gap-layout{display:grid;grid-template-columns:280px 1fr;gap:20px;align-items:center}
+.resource-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.resource{margin:0;min-height:58px}
+.share-card{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px}
+.share-card p{margin:0;font-size:12px;color:var(--ink-soft)}
+.section-title.intel,.section-sub{display:none}
+.modal-backdrop{position:fixed;inset:0;background:rgba(18,22,35,.62);display:none;align-items:center;justify-content:center;z-index:100;padding:24px;backdrop-filter:blur(5px)}
+.modal-backdrop.open{display:flex}
+.project-modal{width:min(640px,100%);background:#fff;border-radius:16px;border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.25);padding:26px;animation:rise .2s ease both}
+.modal-top{display:flex;justify-content:space-between;gap:18px}
+.modal-close{border:0;background:#F2EEE5;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px;color:var(--ink)}
+.project-modal h2{font-family:var(--font-display);font-size:30px;margin:8px 0}
+.modal-desc{color:var(--ink-soft);font-size:13px}
+.modal-cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.modal-box{background:#F8F4EC;border:1px solid var(--line);border-radius:10px;padding:14px}
+.modal-box strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);margin-bottom:7px}
+.modal-box p{margin:0;font-size:12px;color:var(--ink-soft);line-height:1.5}
+.modal-steps{margin:0;padding-left:18px;color:var(--ink-soft);font-size:12px;line-height:1.8}
+@media(max-width:1050px){
+  .career-os{grid-template-columns:190px minmax(0,1fr)}
+  .os-main{padding:26px 25px 60px}
+  .os-stat-grid{grid-template-columns:1.6fr 1fr 1fr}
+  .os-stat-grid .os-stat:last-child{display:none}
+  .project-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:800px){
+  .career-os{display:block}
+  .os-sidebar{position:static;height:auto;padding:12px 16px}
+  .os-nav{display:none}
+  .os-side-bottom{display:none}
+  .os-main{padding:22px 16px 50px}
+  .os-stat-grid,.os-grid,.mission-v2,.gap-layout{grid-template-columns:1fr}
+  .os-stat-grid .os-stat:last-child{display:block}
+  .roadmap{grid-template-columns:repeat(3,1fr);gap:18px 0}
+  .roadmap:before{display:none}
+  .project-grid,.resource-list{grid-template-columns:1fr}
+  .share-card,.os-hero{align-items:flex-start;flex-direction:column}
+}
+
+
+/* ================= PHASE 3 — PRODUCT WOW LAYER ================= */
+.p3-xp{
+  display:flex;align-items:center;gap:10px;margin-top:12px
+}
+.p3-level{
+  font:800 11px var(--font-body);letter-spacing:.08em;text-transform:uppercase;
+  color:#fff;background:rgba(255,255,255,.10);padding:7px 9px;border-radius:999px
+}
+.p3-xpbar{height:7px;flex:1;max-width:180px;background:rgba(255,255,255,.10);border-radius:99px;overflow:hidden}
+.p3-xpfill{height:100%;width:0;background:linear-gradient(90deg,#C6712F,#1F6F63);transition:width .5s ease}
+.p3-xptext{font-size:11px;color:#BFC4D2;white-space:nowrap}
+
+.p3-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.p3-action{
+  border:1px solid var(--line);background:#fff;border-radius:9px;padding:9px 11px;
+  font:700 11px var(--font-body);color:var(--ink);cursor:pointer
+}
+.p3-action:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(32,38,59,.08)}
+
+.p3-scoregrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.p3-score{
+  border:1px solid var(--line);border-radius:10px;padding:12px;background:#FBF9F4
+}
+.p3-score strong{font-family:var(--font-display);font-size:24px;display:block}
+.p3-score span{font-size:10px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+
+.p3-evidence{margin-top:12px;display:grid;gap:8px}
+.p3-evidence-row{
+  display:grid;grid-template-columns:120px 1fr 42px;gap:10px;align-items:center;
+  font-size:11px
+}
+.p3-evidence-row .bar{height:7px;background:#E8E1D3;border-radius:99px;overflow:hidden}
+.p3-evidence-row .bar i{display:block;height:100%;background:linear-gradient(90deg,#C6712F,#1F6F63);border-radius:99px}
+
+.p3-achievements{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.p3-badge{
+  border:1px solid var(--line);border-radius:11px;padding:13px;background:#fff;
+  min-height:92px
+}
+.p3-badge .ico{font-size:20px}.p3-badge strong{display:block;font-size:11px;margin-top:8px}
+.p3-badge span{display:block;font-size:10px;color:var(--ink-soft);margin-top:3px}
+.p3-badge.locked{opacity:.42;filter:grayscale(1)}
+
+.p3-project-builder{
+  display:grid;grid-template-columns:1.15fr .85fr;gap:14px
+}
+.p3-project-progress{height:8px;background:#E8E1D3;border-radius:99px;overflow:hidden;margin:10px 0}
+.p3-project-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#C6712F,#1F6F63);transition:width .4s}
+.p3-checklist{display:grid;gap:7px}
+.p3-check{
+  display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:8px;
+  padding:9px;background:#FBF9F4;font-size:11px
+}
+.p3-check input{accent-color:#1F6F63}
+.p3-check.done{background:#F0F6F3;text-decoration:line-through;opacity:.8}
+
+.p3-compare{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.p3-career{
+  border:1px solid var(--line);border-radius:11px;padding:13px;background:#fff;position:relative
+}
+.p3-career.best{box-shadow:inset 0 3px #C6712F}
+.p3-career h3{font-family:var(--font-display);font-size:18px;margin:5px 0}
+.p3-career .match{font-family:var(--font-display);font-size:25px}
+.p3-career .tiny{font-size:10px;color:var(--ink-soft)}
+.p3-meter{height:6px;background:#E8E1D3;border-radius:99px;overflow:hidden;margin:8px 0}
+.p3-meter i{display:block;height:100%;background:linear-gradient(90deg,#C6712F,#1F6F63)}
+
+.p3-toast{
+  position:fixed;right:24px;bottom:24px;z-index:100;max-width:360px;
+  background:#20263B;color:#fff;padding:14px 16px;border-radius:11px;
+  box-shadow:0 15px 40px rgba(0,0,0,.22);font-size:12px;
+  transform:translateY(20px);opacity:0;pointer-events:none;transition:.25s
+}
+.p3-toast.show{transform:translateY(0);opacity:1}
+
+.p3-modal{
+  position:fixed;inset:0;background:rgba(20,24,38,.52);backdrop-filter:blur(5px);
+  display:none;align-items:center;justify-content:center;z-index:90;padding:20px
+}
+.p3-modal.open{display:flex}
+.p3-modal-card{
+  width:min(720px,100%);max-height:88vh;overflow:auto;background:#FAF6EF;
+  border:1px solid #D9D0BF;border-radius:16px;padding:22px;box-shadow:0 25px 80px rgba(0,0,0,.25)
+}
+.p3-modal-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.p3-close{border:1px solid var(--line);background:#fff;border-radius:8px;width:34px;height:34px;cursor:pointer}
+.p3-modal h2{font-family:var(--font-display);font-size:28px;margin:4px 0}
+.p3-modal-section{margin-top:16px;padding-top:15px;border-top:1px solid var(--line)}
+.p3-modal-section h4{margin:0 0 8px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--teal)}
+
+.demo-mode .os-card,.demo-mode .mission-v2{transition:box-shadow .2s}
+.demo-mode .os-card:hover,.demo-mode .mission-v2:hover{box-shadow:0 10px 30px rgba(32,38,59,.08)}
+
+@media(max-width:900px){
+  .p3-achievements{grid-template-columns:repeat(2,1fr)}
+  .p3-project-builder,.p3-compare{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .p3-scoregrid{grid-template-columns:1fr}
+  .p3-evidence-row{grid-template-columns:105px 1fr 36px}
+  .p3-toast{right:12px;bottom:12px;left:12px;max-width:none}
+}
+
+
+/* ================= PHASE 4 — RESUME INTELLIGENCE ================= */
+.p4-intel-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+.p4-profile{
+  display:flex;gap:14px;align-items:center;padding:14px;border:1px solid var(--line);
+  border-radius:11px;background:#FBF9F4
+}
+.p4-avatar{
+  width:52px;height:52px;border-radius:50%;display:grid;place-items:center;
+  background:#20263B;color:#fff;font-family:var(--font-display);font-size:22px
+}
+.p4-profile h3{font-family:var(--font-display);font-size:21px;margin:0 0 3px}
+.p4-profile p{margin:0;color:var(--ink-soft);font-size:11px}
+.p4-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.p4-tag{
+  border:1px solid var(--line);background:#fff;padding:5px 8px;border-radius:999px;
+  font-size:10px;font-weight:700
+}
+.p4-statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.p4-stat{padding:11px;border:1px solid var(--line);border-radius:9px;background:#fff}
+.p4-stat strong{display:block;font-family:var(--font-display);font-size:22px}
+.p4-stat span{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-soft)}
+.p4-signal{display:grid;grid-template-columns:1fr 52px;gap:8px;align-items:center;margin-top:8px}
+.p4-signal .bar{height:8px;background:#E8E1D3;border-radius:99px;overflow:hidden}
+.p4-signal .bar i{display:block;height:100%;background:linear-gradient(90deg,#C6712F,#1F6F63)}
+.p4-signal strong{font-size:10px;text-align:right}
+.p4-evidence-list{display:grid;gap:8px;margin-top:10px}
+.p4-evidence{
+  border:1px solid var(--line);border-radius:9px;padding:10px;background:#fff
+}
+.p4-evidence b{font-size:11px}.p4-evidence small{display:block;color:var(--ink-soft);font-size:10px;margin-top:4px}
+.p4-evidence.positive{border-left:3px solid #1F6F63}
+.p4-evidence.gap{border-left:3px solid #C6712F}
+.p4-upload-note{
+  margin-top:10px;padding:10px;border-radius:9px;background:#F2EEE5;color:var(--ink-soft);
+  font-size:10px
+}
+.p4-pipeline{display:grid;gap:8px}
+.p4-step{
+  display:grid;grid-template-columns:30px 1fr auto;gap:9px;align-items:center;
+  padding:10px;border:1px solid var(--line);border-radius:9px;background:#fff
+}
+.p4-step-num{
+  width:27px;height:27px;border-radius:50%;display:grid;place-items:center;
+  background:#20263B;color:#fff;font-size:10px;font-weight:800
+}
+.p4-step b{font-size:11px}.p4-step span{display:block;color:var(--ink-soft);font-size:9px;margin-top:2px}
+.p4-status{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#1F6F63}
+.p4-gap-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.p4-gap{
+  padding:10px;border:1px solid var(--line);border-radius:9px;background:#FBF9F4
+}
+.p4-gap strong{font-size:11px}.p4-gap span{display:block;font-size:9px;color:var(--ink-soft);margin-top:3px}
+.p4-next{
+  margin-top:12px;padding:13px;border-radius:10px;background:#20263B;color:#fff;
+  display:flex;justify-content:space-between;gap:12px;align-items:center
+}
+.p4-next strong{font-family:var(--font-display);font-size:18px}
+.p4-next span{font-size:10px;color:#D8DCE5;display:block;margin-top:2px}
+.p4-next button{border:0;border-radius:8px;padding:9px 12px;font-weight:800;cursor:pointer}
+@media(max-width:900px){.p4-intel-grid{grid-template-columns:1fr}}
+@media(max-width:620px){.p4-statgrid,.p4-gap-grid{grid-template-columns:1fr}}
+
+
+/* ================= PHASE 5 — OPPORTUNITY ENGINE ================= */
+.p5-opps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.p5-opportunity{border:1px solid var(--line);border-radius:11px;background:#fff;padding:14px;display:flex;flex-direction:column;min-height:250px}
+.p5-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.p5-type{font-size:9px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:#1F6F63}
+.p5-match{font-family:var(--font-display);font-size:24px;color:#20263B}
+.p5-opportunity h3{font-family:var(--font-display);font-size:19px;margin:9px 0 4px}
+.p5-company{font-size:10px;color:var(--ink-soft)}
+.p5-meta{display:flex;gap:5px;flex-wrap:wrap;margin:11px 0}
+.p5-chip{font-size:9px;border:1px solid var(--line);padding:5px 7px;border-radius:999px;background:#FBF9F4}
+.p5-skills{font-size:9px;color:var(--ink-soft);line-height:1.5;margin-bottom:10px}
+.p5-skills b{color:var(--ink)}
+.p5-bars{display:grid;gap:5px;margin-top:auto}
+.p5-barrow{display:grid;grid-template-columns:58px 1fr 27px;align-items:center;gap:6px;font-size:9px}
+.p5-bar{height:6px;background:#E8E1D3;border-radius:99px;overflow:hidden}
+.p5-bar i{display:block;height:100%;background:linear-gradient(90deg,#C6712F,#1F6F63)}
+.p5-cta{margin-top:12px;width:100%;border:0;background:#20263B;color:#fff;padding:9px;border-radius:8px;font-weight:800;cursor:pointer}
+.p5-cta.secondary{background:#F2EEE5;color:#20263B}
+.p5-detail{margin-top:8px;padding:10px;border:1px solid var(--line);border-radius:9px;background:#FBF9F4;font-size:10px;display:none}
+.p5-detail.show{display:block}
+.p5-detail strong{font-family:var(--font-display);font-size:15px}
+.p5-detail ul{padding-left:17px;margin:6px 0 0}
+.p5-detail li{margin:3px 0}
+.p5-filterbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.p5-filter{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;font-size:9px;font-weight:800;cursor:pointer}
+.p5-filter.active{background:#20263B;color:#fff}
+.p5-score-note{padding:10px 12px;border-radius:9px;background:#F2EEE5;font-size:10px;color:var(--ink-soft);margin-bottom:12px}
+@media(max-width:1050px){.p5-opps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.p5-opps{grid-template-columns:1fr}}
+
+
+/* ================= PHASE 6 — CAREER MISSION SYSTEM ================= */
+.p6-mission{background:#20263B;color:#fff;border-radius:12px;padding:18px;position:relative;overflow:hidden}
+.p6-mission:after{content:"";position:absolute;width:180px;height:180px;border:1px solid rgba(255,255,255,.10);border-radius:50%;right:-65px;top:-75px}
+.p6-kicker{font-size:9px;letter-spacing:.12em;text-transform:uppercase;font-weight:900;color:#D98B4A}
+.p6-mission-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:16px;align-items:stretch}
+.p6-mission h2{font-family:var(--font-display);font-size:27px;margin:5px 0 7px;color:#fff}
+.p6-mission p{font-size:11px;line-height:1.55;color:rgba(255,255,255,.72);margin:0}
+.p6-tags{display:flex;gap:6px;flex-wrap:wrap;margin:13px 0}
+.p6-tag{font-size:9px;padding:5px 8px;border:1px solid rgba(255,255,255,.18);border-radius:999px;color:#fff}
+.p6-progress{height:7px;background:rgba(255,255,255,.14);border-radius:99px;overflow:hidden;margin:9px 0 5px}
+.p6-progress i{display:block;height:100%;background:linear-gradient(90deg,#D98B4A,#3B8F80);transition:width .4s}
+.p6-action{background:#fff;color:#20263B;border:0;border-radius:8px;padding:10px 14px;font-weight:900;cursor:pointer;min-width:145px}
+.p6-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:13px}
+.p6-stat{border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:8px}
+.p6-stat b{display:block;font-family:var(--font-display);font-size:18px;color:#fff}
+.p6-stat span{font-size:8px;color:rgba(255,255,255,.62)}
+.p6-side{background:#F8F4EC;border-radius:9px;padding:14px;color:#20263B}
+.p6-side h3{font-family:var(--font-display);font-size:17px;margin:3px 0 8px}
+.p6-step{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid #E3DCCF;font-size:9px;line-height:1.4}
+.p6-step:last-child{border-bottom:0}
+.p6-step-num{width:20px;height:20px;border-radius:50%;background:#20263B;color:#fff;display:grid;place-items:center;flex:0 0 auto;font-size:8px;font-weight:900}
+.p6-step.done .p6-step-num{background:#1F6F63}
+.p6-step.done{text-decoration:line-through;opacity:.55}
+.p6-modal-backdrop{position:fixed;inset:0;background:rgba(18,23,39,.58);display:none;align-items:center;justify-content:center;z-index:9999;padding:20px}
+.p6-modal-backdrop.show{display:flex}
+.p6-modal{width:min(560px,100%);background:#FAF6EF;border:1px solid #D9D0C0;border-radius:14px;box-shadow:0 25px 80px rgba(0,0,0,.25);padding:20px;color:#20263B}
+.p6-modal h2{font-family:var(--font-display);font-size:25px;margin:5px 0}
+.p6-modal p{font-size:11px;color:#606981;line-height:1.55}
+.p6-task{display:flex;gap:10px;align-items:flex-start;border:1px solid #DED6C7;border-radius:9px;padding:11px;margin:7px 0;background:#fff}
+.p6-task input{margin-top:2px;accent-color:#1F6F63}
+.p6-task label{font-size:10px;line-height:1.45;cursor:pointer}
+.p6-modal-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:14px}
+.p6-modal-actions button{border:1px solid #D9D0C0;border-radius:8px;padding:9px 13px;font-weight:800;cursor:pointer}
+.p6-modal-actions .primary{background:#20263B;color:#fff;border-color:#20263B}
+.p6-xp{font-family:var(--font-display);font-size:17px}
+.p6-toast{position:fixed;right:22px;bottom:22px;background:#20263B;color:#fff;padding:11px 14px;border-radius:9px;font-size:10px;box-shadow:0 12px 35px rgba(0,0,0,.2);z-index:10000;transform:translateY(20px);opacity:0;pointer-events:none;transition:.25s}
+.p6-toast.show{transform:translateY(0);opacity:1}
+@media(max-width:850px){.p6-mission-grid{grid-template-columns:1fr}.p6-stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.p6-stats{grid-template-columns:1fr 1fr 1fr}.p6-action{width:100%}}
+
+
+/* ================= PHASE 7: HACKATHON FINAL POLISH ================= */
+html{scroll-behavior:smooth}
+body:has(#screen-dashboard.active){overflow-x:hidden}
+body:has(#screen-dashboard.active) .os-main{padding-top:22px}
+body:has(#screen-dashboard.active) .os-topbar{
+  position:sticky;top:0;z-index:20;
+  padding:8px 0 14px;
+  background:rgba(245,241,232,.94);
+  backdrop-filter:blur(10px);
+}
+.os-nav button{transition:background .18s ease,color .18s ease,transform .18s ease}
+.os-nav button:hover{transform:translateX(2px)}
+.os-card,.project,.mission-v2,.reason,.p5-card,.p6-stat,.achievement,.resource{
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+}
+.os-card:hover,.mission-v2:hover,.p5-card:hover,.p6-stat:hover,.achievement:hover{
+  box-shadow:0 12px 32px rgba(32,38,59,.08);
+}
+.os-top-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.os-control{
+  border:1px solid var(--line);background:rgba(255,255,255,.82);color:var(--ink);
+  padding:8px 11px;border-radius:999px;font:600 11px var(--font-body);cursor:pointer;
+  transition:.18s ease;
+}
+.os-control:hover{border-color:var(--rust);transform:translateY(-1px)}
+.os-control.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.os-control.primary:hover{background:#2b334d}
+.os-journey{
+  display:flex;align-items:center;gap:8px;margin-bottom:12px;
+  font-size:10px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.1em;font-weight:700
+}
+.os-journey-line{width:130px;height:5px;background:#E5DED0;border-radius:99px;overflow:hidden}
+.os-journey-line span{display:block;height:100%;width:70%;background:linear-gradient(90deg,var(--rust),var(--teal));border-radius:99px}
+.p7-demo-banner{
+  display:none;position:fixed;left:250px;right:18px;bottom:16px;z-index:80;
+  background:var(--ink);color:#fff;border-radius:12px;padding:10px 14px;
+  box-shadow:0 14px 35px rgba(32,38,59,.25);font-size:12px
+}
+.p7-demo-banner strong{color:#fff}.p7-demo-banner span{color:#C9CED9}
+body.demo-mode .p7-demo-banner{display:flex;justify-content:space-between;align-items:center;gap:14px}
+body.demo-mode .os-card:hover,body.demo-mode .project:hover{transform:translateY(-4px)}
+.p7-reset-danger{color:#9B3B2E}
+.p7-presentation body{}
+body.presentation-mode .os-sidebar{width:210px}
+body.presentation-mode .os-main{padding-left:32px;padding-right:32px}
+body.presentation-mode .os-card:hover,body.presentation-mode .project:hover{transform:none;box-shadow:none}
+body.presentation-mode .p7-demo-banner{display:flex}
+.p7-topline{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  margin-bottom:10px
+}
+.p7-status{display:inline-flex;align-items:center;gap:6px;font-size:10px;color:var(--teal);font-weight:700}
+.p7-status i{width:7px;height:7px;border-radius:50%;background:var(--teal);display:inline-block;box-shadow:0 0 0 4px rgba(31,111,99,.10)}
+.p7-backtop{
+  position:fixed;right:24px;bottom:22px;z-index:70;width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:700;cursor:pointer;
+  box-shadow:0 8px 22px rgba(32,38,59,.12);opacity:0;pointer-events:none;transition:.2s ease
+}
+.p7-backtop.show{opacity:1;pointer-events:auto}
+.p7-backtop:hover{transform:translateY(-2px);border-color:var(--rust);color:var(--rust)}
+@media(max-width:900px){
+  .p7-demo-banner{left:18px;right:18px}
+  .os-top-actions{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important;animation:none!important}
+}
+
+
+/* ================= PHASE 8: FINAL HACKATHON POLISH ================= */
+.p8-tools{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.p8-btn{
+  border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;
+  padding:8px 11px;font:700 11px var(--font-body);cursor:pointer;transition:.18s ease
+}
+.p8-btn:hover{transform:translateY(-1px);border-color:var(--rust);box-shadow:0 5px 14px rgba(32,38,59,.08)}
+.p8-btn.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+.p8-btn.teal{background:#EAF3F0;color:var(--teal);border-color:#D1E5DF}
+.p8-hero-strip{
+  margin:0 0 18px;padding:10px 13px;border:1px solid var(--line);border-radius:10px;
+  background:rgba(255,255,255,.55);display:flex;justify-content:space-between;gap:12px;
+  align-items:center;font-size:11px;color:var(--ink-soft)
+}
+.p8-hero-strip strong{color:var(--ink)}
+.p8-kbd{padding:2px 6px;border:1px solid #D8D0C2;border-radius:5px;background:#F7F2E9;font-size:10px}
+.p8-modal{
+  position:fixed;inset:0;z-index:120;background:rgba(20,25,40,.55);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;padding:24px
+}
+.p8-modal.open{display:flex}
+.p8-dialog{
+  width:min(720px,100%);max-height:86vh;overflow:auto;background:#FBF8F2;border:1px solid #DED4C3;
+  border-radius:16px;box-shadow:0 30px 80px rgba(20,25,40,.28);padding:24px
+}
+.p8-dialog h2{margin:0 0 6px;font-family:var(--font-display);font-size:30px}
+.p8-dialog p{margin:0 0 18px;color:var(--ink-soft);line-height:1.55;font-size:12px}
+.p8-steps{display:grid;gap:9px}
+.p8-step{
+  display:grid;grid-template-columns:34px 1fr auto;gap:12px;align-items:center;
+  padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff
+}
+.p8-step-num{width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:800;font-size:11px}
+.p8-step strong{display:block;font-size:12px;margin-bottom:2px}.p8-step span{font-size:10px;color:var(--ink-soft)}
+.p8-step button{white-space:nowrap}
+.p8-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.p8-trust{
+  margin-top:14px;padding:10px 12px;border-radius:9px;background:#F1EDE4;color:#697085;
+  font-size:10px;line-height:1.5
+}
+.p8-complete{
+  display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border-radius:99px;
+  background:#EAF3F0;color:var(--teal);font-size:9px;font-weight:800
+}
+.p8-judge-note{
+  margin-top:16px;border-left:3px solid var(--rust);padding:9px 11px;background:#FAF2E7;
+  font-size:10px;color:#6B6370;line-height:1.5
+}
+@media(max-width:900px){
+  .p8-tools{display:none}.p8-hero-strip{display:none}
+}
+@media(prefers-reduced-motion:reduce){.p8-btn{transition:none}}
+
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="brandrow">
+    <div class="compass"></div>
+    <span>Pathfinder</span>
+  </div>
+
+  <!-- SCREEN 1: LANDING -->
+  <section id="screen-landing" class="screen active">
+    <h1>Find your track. See the gap. Close it.</h1>
+    <p class="lede">
+      Answer a short questionnaire, optionally paste your resume or LinkedIn summary,
+      and get a weighted fit score across three career tracks, a visual skill-gap
+      breakdown, and a real checklist of free courses — with a shareable result card
+      at the end.
+    </p>
+    <div class="btn-row">
+      <button class="btn" onclick="goTo('quiz')">Start the questionnaire</button>
+    </div>
+    <div class="howrow">
+      <div class="howstep"><div class="n">1</div><p>Answer four questions — each one scores all three tracks, not just one.</p></div>
+      <div class="howstep"><div class="n">2</div><p>Optionally paste your resume so the gap analysis is based on real skills, not guesses.</p></div>
+      <div class="howstep"><div class="n">3</div><p>Get a fit chart, a skill-gap radar, a checklist, and a downloadable result card.</p></div>
+    </div>
+  </section>
+
+  <!-- SCREEN 2: QUIZ -->
+  <section id="screen-quiz" class="screen">
+    <div class="progress-track" id="quiz-progress"></div>
+    <div class="q-count" id="q-count">Question 1 of 4</div>
+    <h2 class="q-text" id="q-text"></h2>
+    <div class="options" id="q-options"></div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="btn-back" onclick="prevQuestion()">Back</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 3: RESUME PASTE -->
+  <section id="screen-resume" class="screen">
+    <h2 class="q-text" style="max-width:26ch;">Paste your resume or LinkedIn summary</h2>
+    <p class="field-hint">Optional, but this is what makes the skill-gap chart personal instead of generic. Nothing leaves this browser — the analysis runs locally.</p>
+    <textarea id="resume-text" class="resume-box" placeholder="Paste any text that describes your experience — a resume, your LinkedIn About section, a list of projects, anything. e.g. &quot;Built dashboards in Excel and Power BI, ran A/B tests, presented findings to stakeholders...&quot;"></textarea>
+    <div class="btn-row">
+      <button class="btn" onclick="submitResume()">Analyze and continue</button>
+      <button class="btn btn-ghost" onclick="skipResume()">Skip this step</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 4: ANALYZING -->
+  <section id="screen-analyzing" class="screen">
+    <div class="analyzing-wrap">
+      <div class="spinner"></div>
+      <div class="analyzing-line" id="analyzing-line">Scoring your answers across all three tracks…</div>
+    </div>
+  </section>
+
+  <!-- SCREEN 5: DASHBOARD -->
+  <section id="screen-dashboard" class="screen">
+    <div class="career-os">
+      <aside class="os-sidebar">
+        <div class="os-brand"><div class="os-brand-mark"></div><span>Pathfinder</span></div>
+        <nav class="os-nav">
+          <button class="active" onclick="scrollToOS('overview')">◉ Overview</button>
+          <button onclick="scrollToOS('roadmap')">↗ Roadmap</button>
+          <button onclick="scrollToOS('projects')">▣ Projects</button>
+          <button onclick="scrollToOS('skills')">◌ Skill gaps</button>
+          <button onclick="scrollToOS('resources')">✓ Learning plan</button>
+          <button onclick="scrollToOS('evidence')">✦ Evidence</button>
+          <button onclick="scrollToResumeIntelligence()">⌁ Resume AI</button>
+          <button onclick="document.getElementById('opportunities')?.scrollIntoView({behavior:'smooth'})">↗ Opportunities</button>
+          <button onclick="document.getElementById('missions')?.scrollIntoView({behavior:'smooth'})">◎ Missions</button>
+          <button onclick="scrollToOS('achievements')">🏆 Achievements</button>
+        </nav>
+        <div class="os-side-bottom">
+          <small>Current target</small><strong id="side-track">Data Analyst</strong>
+          <small style="display:block;margin-top:13px">Local profile • saved</small>
+        </div>
+      </aside>
+
+      <main class="os-main">
+        <div class="os-content">
+          <div class="os-topbar">
+            <div class="os-topbar-left"><span class="os-page-label">Career intelligence workspace</span><span class="os-date">• Personalized command center</span></div>
+            <div class="os-user">
+  <div class="p8-tools">
+    <button class="p8-btn dark" onclick="p8OpenJudge()">🏆 Judge walkthrough</button>
+    <button class="p8-btn teal" onclick="p8LoadShowcase()">✨ Showcase profile</button>
+    <button class="p8-btn" onclick="p8TogglePresentation()">Presentation</button>
+    <button class="p8-btn" onclick="p8Reset()">Reset</button>
+  </div>
+  <span>Career Twin active</span><div class="os-avatar">P</div>
+</div>
+          </div>
+
+          <div class="p8-hero-strip">
+  <span><strong>Pathfinder loop:</strong> evidence → fit → gap → action → proof</span>
+  <span><span class="p8-kbd">Demo-ready</span> • saved locally</span>
+</div>
+<div class="os-hero" id="overview">
+            <div><h1>Your career, decoded.</h1><p>One view of your fit, readiness, next action, roadmap and portfolio direction.</p></div>
+            <div class="status-pill"><span class="status-dot"></span> Analysis complete</div>
+          </div>
+
+          <div class="os-stat-grid">
+            <div class="os-card os-stat primary">
+              <div class="os-mini-kicker">Your Career Twin</div>
+              <div class="os-twin-name" id="twin-name">Analytical Builder</div>
+              <p class="metric-note" id="twin-desc" style="margin-top:4px"></p>
+              <div class="p3-xp">
+                <span class="p3-level" id="xp-level">LEVEL 1</span>
+                <div class="p3-xpbar"><div class="p3-xpfill" id="xp-fill"></div></div>
+                <span class="p3-xptext" id="xp-text">0 / 500 XP</span>
+              </div>
+            </div>
+            <div class="os-card os-stat">
+              <span class="badge">Best match</span><div class="metric-label">Career fit</div>
+              <div class="metric-value" id="hero-fit">0%</div><p class="metric-note" id="hero-fit-note">Best match</p>
+              <div class="score-track"><div class="score-fill" id="hero-fit-bar" style="width:0%"></div></div>
+            </div>
+            <div class="os-card os-stat">
+              <div class="metric-label">Readiness</div><div class="metric-value" id="hero-readiness">0%</div>
+              <p class="metric-note">Current skill coverage</p><div class="score-track"><div class="score-fill" id="hero-readiness-bar" style="width:0%"></div></div>
+            </div>
+            <div class="os-card os-stat">
+              <div class="metric-label">Biggest gap</div><div class="metric-value" id="hero-gap" style="font-size:22px">—</div>
+              <p class="metric-note">Highest-impact skill</p>
+            </div>
+          </div>
+
+          <div class="mission-v2" id="mission">
+            <div><div class="mission-kicker">🎯 What should I do today?</div><h2 id="mission-title">Identify your biggest skill gap</h2>
+              <p id="mission-desc">Pathfinder will prioritize the action with the highest impact on your readiness.</p>
+              <div class="mission-meta"><span class="mini-tag" id="mission-time">30–45 min</span><span class="mini-tag" id="mission-impact">High impact</span><span class="mini-tag" id="mission-xp">+50 XP</span></div>
+            </div>
+            <button class="btn" id="mission-btn" onclick="startMission()">Start mission →</button>
+          </div>
+
+          <div class="os-grid">
+            <div class="os-card os-panel">
+              <div class="os-panel-head"><div><div class="os-kicker">Career intelligence</div><h2>Readiness snapshot</h2><p>How close your current evidence is to the target skill set.</p></div></div>
+              <div class="readiness-v2">
+                <div class="score-ring" id="readiness-ring" style="--score:0"><span id="ring-score">0%</span></div>
+                <div class="readiness-copy"><div class="metric-label">Current position</div><h3 id="readiness-title">Building toward your target</h3>
+                  <p id="readiness-copy">Your readiness score estimates how much of the target skill set you currently demonstrate.</p>
+                  <div class="alternative-list" id="alternative-list"></div>
+                </div>
+              </div>
+            </div>
+            <div class="os-card os-panel">
+              <div class="os-panel-head"><div><div class="os-kicker">Explainable AI</div><h2>Why this career?</h2><p>See the signals behind your recommendation.</p></div></div>
+              <div class="explain-list" id="explain-grid"></div>
+            </div>
+          </div>
+
+          <div class="os-card os-panel" id="roadmap" style="margin-top:16px">
+            <div class="os-panel-head"><div><div class="os-kicker">6-week plan</div><h2>Your roadmap</h2><p>Foundation → proof → career launch.</p></div><button class="os-btn" onclick="scrollToOS('projects')">Next: build proof →</button></div>
+            <div class="roadmap" id="roadmap-list"></div>
+          </div>
+
+          <div class="os-card os-panel" id="projects" style="margin-top:16px">
+            <div class="os-panel-head"><div><div class="os-kicker">Portfolio engine</div><h2>Projects built around your gaps</h2><p>Build evidence employers can actually see.</p></div><button class="os-btn" onclick="generateProjects()">Refresh ideas</button></div>
+            <div class="project-grid" id="project-grid"></div>
+          </div>
+
+          <div class="os-grid" id="skills">
+            <div class="os-card os-panel">
+              <div class="os-panel-head"><div><div class="os-kicker">Skill gap</div><h2>What to strengthen</h2><p id="gap-sub"></p></div></div>
+              <div class="gap-layout"><div class="chart-card"><canvas id="skill-chart" width="280" height="280"></canvas></div><div class="fit-chips" id="skill-chips"></div></div>
+              <div class="gap-callout" id="gap-callout"></div>
+            </div>
+            <div class="os-card os-panel">
+              <div class="os-panel-head"><div><div class="os-kicker">Career options</div><h2>Compare your paths</h2><p>Every answer contributes to every track.</p></div></div>
+              <div class="gap-layout"><div class="chart-card"><canvas id="fit-chart" width="260" height="260"></canvas></div><div class="fit-chips" id="fit-chips"></div></div>
+            </div>
+          </div>
+
+
+
+
+
+          <div class="os-card os-panel" id="missions" style="margin-top:16px">
+            <div class="os-panel-head">
+              <div>
+                <div class="os-kicker">Phase 6 · Career mission system</div>
+                <h2>Turn your gaps into progress</h2>
+                <p>Pathfinder converts your highest-impact gap into one focused mission, so the dashboard always tells you what to do next.</p>
+              </div>
+              <span class="badge">ACTION ENGINE</span>
+            </div>
+
+            <div class="p6-mission-grid">
+              <div class="p6-mission">
+                <div class="p6-kicker">Today's mission</div>
+                <h2 id="p6-title">Build evidence for your biggest gap</h2>
+                <p id="p6-desc">Complete a focused task that produces something you can show, explain and add to your portfolio.</p>
+                <div class="p6-tags">
+                  <span class="p6-tag" id="p6-time">30–45 min</span>
+                  <span class="p6-tag" id="p6-ready">+9 readiness</span>
+                  <span class="p6-tag">+48 XP</span>
+                </div>
+                <div class="p6-progress"><i id="p6-progress" style="width:0%"></i></div>
+                <div style="font-size:9px;color:rgba(255,255,255,.65)" id="p6-progress-label">0 of 3 tasks complete</div>
+                <div style="margin-top:13px"><button class="p6-action" onclick="p6OpenMission()">Start mission →</button></div>
+                <div class="p6-stats">
+                  <div class="p6-stat"><b id="p6-xp">0</b><span>XP earned</span></div>
+                  <div class="p6-stat"><b id="p6-level">1</b><span>Career level</span></div>
+                  <div class="p6-stat"><b id="p6-missions">0</b><span>Missions done</span></div>
+                </div>
+              </div>
+
+              <div class="p6-side">
+                <div class="p6-kicker">Mission logic</div>
+                <h3>From gap → proof</h3>
+                <div class="p6-step done"><span class="p6-step-num">1</span><span>Detect the highest-impact skill gap.</span></div>
+                <div class="p6-step done"><span class="p6-step-num">2</span><span>Choose a task that demonstrates that skill.</span></div>
+                <div class="p6-step"><span class="p6-step-num">3</span><span>Complete the proof and update your readiness.</span></div>
+                <div class="p6-step"><span class="p6-step-num">4</span><span>Use the new evidence to improve opportunity matches.</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="p6-modal-backdrop" class="p6-modal-backdrop" onclick="if(event.target===this)p6CloseMission()">
+            <div class="p6-modal">
+              <div class="p6-kicker">Career mission</div>
+              <h2 id="p6-modal-title">Your next best move</h2>
+              <p id="p6-modal-desc">Complete these three small actions. Together they create stronger evidence than simply listing a skill on a resume.</p>
+              <div id="p6-tasks"></div>
+              <div class="p6-modal-actions">
+                <button onclick="p6CloseMission()">Close</button>
+                <button class="primary" onclick="p6CompleteMission()">Complete mission +48 XP</button>
+              </div>
+            </div>
+          </div>
+          <div id="p6-toast" class="p6-toast"></div>
+
+          <div class="os-card os-panel" id="opportunities" style="margin-top:16px">
+            <div class="os-panel-head">
+              <div>
+                <div class="os-kicker">Phase 5 · Opportunity engine</div>
+                <h2>Roles you could target next</h2>
+                <p>Pathfinder turns your current evidence into realistic entry-level opportunities — then shows exactly what is holding your match score back.</p>
+              </div>
+              <span class="badge">SMART MATCH</span>
+            </div>
+
+            <div class="p5-score-note">
+              <b id="p5-target-label">Based on your current target</b> · Match scores combine career fit, detected skills, evidence depth and role requirements. They are guidance scores, not guarantees of hiring.
+            </div>
+
+            <div class="p5-filterbar">
+              <button class="p5-filter active" data-p5-filter="all" onclick="p5Filter('all',this)">All opportunities</button>
+              <button class="p5-filter" data-p5-filter="internship" onclick="p5Filter('internship',this)">Internships</button>
+              <button class="p5-filter" data-p5-filter="entry" onclick="p5Filter('entry',this)">Entry level</button>
+              <button class="p5-filter" data-p5-filter="bridge" onclick="p5Filter('bridge',this)">Bridge roles</button>
+            </div>
+
+            <div class="p5-opps" id="p5-opps"></div>
+          </div>
+
+          <div class="os-card os-panel" id="resume-intelligence" style="margin-top:16px">
+            <div class="os-panel-head">
+              <div>
+                <div class="os-kicker">Phase 4 · Resume intelligence</div>
+                <h2>What your experience actually says</h2>
+                <p>Pathfinder converts your resume into structured evidence, strengths and next actions.</p>
+              </div>
+              <span class="badge" id="p4-resume-status">LOCAL ANALYSIS</span>
+            </div>
+
+            <div class="p4-intel-grid">
+              <div>
+                <div class="p4-profile">
+                  <div class="p4-avatar" id="p4-avatar">P</div>
+                  <div>
+                    <h3 id="p4-name">Career candidate</h3>
+                    <p id="p4-headline">Your profile is being decoded from the evidence you provided.</p>
+                    <div class="p4-tags" id="p4-tags"></div>
+                  </div>
+                </div>
+
+                <div class="p4-statgrid">
+                  <div class="p4-stat"><span>Skills detected</span><strong id="p4-skills-count">0</strong></div>
+                  <div class="p4-stat"><span>Evidence signals</span><strong id="p4-evidence-count">0</strong></div>
+                  <div class="p4-stat"><span>Profile depth</span><strong id="p4-depth">0%</strong></div>
+                </div>
+
+                <div class="os-kicker" style="margin-top:16px">Detected capability map</div>
+                <div id="p4-skill-map"></div>
+              </div>
+
+              <div>
+                <div class="os-kicker">Evidence signals</div>
+                <div class="p4-evidence-list" id="p4-evidence-list"></div>
+                <div class="p4-upload-note" id="p4-source-note">
+                  Analysis is running locally in your browser. No resume is sent anywhere.
+                </div>
+              </div>
+            </div>
+
+            <div class="p4-next">
+              <div>
+                <strong id="p4-next-title">Your next best move</strong>
+                <span id="p4-next-desc">Add resume evidence to generate a more precise recommendation.</span>
+              </div>
+              <button onclick="scrollToOS('roadmap')">Open roadmap →</button>
+            </div>
+          </div>
+
+
+          <div class="os-card os-panel" style="margin-top:16px">
+            <div class="os-panel-head">
+              <div>
+                <div class="os-kicker">How it works</div>
+                <h2>From resume → career action</h2>
+                <p>A transparent pipeline judges can understand in seconds.</p>
+              </div>
+            </div>
+            <div class="p4-pipeline">
+              <div class="p4-step"><div class="p4-step-num">01</div><div><b>Extract</b><span>Find skills, projects, education, tools and experience signals.</span></div><div class="p4-status">Complete</div></div>
+              <div class="p4-step"><div class="p4-step-num">02</div><div><b>Evaluate</b><span>Estimate evidence strength instead of treating every keyword as mastery.</span></div><div class="p4-status">Complete</div></div>
+              <div class="p4-step"><div class="p4-step-num">03</div><div><b>Compare</b><span>Map your evidence against the requirements of each career path.</span></div><div class="p4-status">Complete</div></div>
+              <div class="p4-step"><div class="p4-step-num">04</div><div><b>Prioritize</b><span>Choose the smallest high-impact skill gap to close next.</span></div><div class="p4-status">Active</div></div>
+            </div>
+          </div>
+
+          <div class="os-grid" id="evidence" style="margin-top:16px">
+            <div class="os-card os-panel">
+              <div class="os-panel-head">
+                <div><div class="os-kicker">Evidence engine</div><h2>Why Pathfinder believes you</h2>
+                <p>Separate stated interests from evidence you can demonstrate.</p></div>
+              </div>
+              <div class="p3-scoregrid">
+                <div class="p3-score"><span>Interest signal</span><strong id="e-interest">0%</strong></div>
+                <div class="p3-score"><span>Skill evidence</span><strong id="e-skill">0%</strong></div>
+                <div class="p3-score"><span>Career confidence</span><strong id="e-confidence">0%</strong></div>
+              </div>
+              <div class="p3-evidence" id="evidence-list"></div>
+              <div class="p3-actions">
+                <button class="p3-action" onclick="openEvidenceModal()">See scoring logic</button>
+                <button class="p3-action" onclick="simulateEvidence()">Run evidence boost</button>
+              </div>
+            </div>
+
+            <div class="os-card os-panel">
+              <div class="os-panel-head">
+                <div><div class="os-kicker">Career comparison</div><h2>Three paths, one decision</h2>
+                <p>Compare fit, readiness and learning effort side by side.</p></div>
+              </div>
+              <div class="p3-compare" id="career-compare"></div>
+            </div>
+          </div>
+
+          <div class="os-card os-panel" id="achievements" style="margin-top:16px">
+            <div class="os-panel-head">
+              <div><div class="os-kicker">Progress system</div><h2>Your momentum</h2>
+              <p>Every mission and completed learning item builds visible career evidence.</p></div>
+              <button class="os-btn" onclick="claimAchievement()">Claim next badge</button>
+            </div>
+            <div class="p3-achievements" id="achievement-grid"></div>
+          </div>
+
+          <div class="os-card os-panel" style="margin-top:16px">
+            <div class="os-panel-head">
+              <div><div class="os-kicker">Portfolio builder</div><h2>Turn one idea into proof</h2>
+              <p>Choose a project, then complete the steps Pathfinder recommends.</p></div>
+              <span class="badge" id="builder-percent">0% complete</span>
+            </div>
+            <div class="p3-project-builder">
+              <div>
+                <div class="project-tag">ACTIVE BUILD</div>
+                <h3 id="builder-title" style="font-family:var(--font-display);font-size:24px;margin:7px 0 4px">Your flagship project</h3>
+                <p id="builder-desc" class="metric-note">Pick a project above and start collecting evidence.</p>
+                <div class="p3-project-progress"><i id="builder-bar"></i></div>
+                <div class="p3-actions">
+                  <button class="p3-action" onclick="startBuilder()">Start build</button>
+                  <button class="p3-action" onclick="resetBuilder()">Reset build</button>
+                </div>
+              </div>
+              <div class="p3-checklist" id="builder-list"></div>
+            </div>
+          </div>
+
+          <div class="os-card os-panel" id="resources">
+            <div class="os-panel-head"><div><div class="os-kicker">Learning plan</div><h2>Turn gaps into progress</h2><p>Check off resources as you build each capability.</p></div><strong id="progress-pct" style="font-family:var(--font-display);font-size:22px">0%</strong></div>
+            <div class="progress-wrap"><div class="progress-label"><span>Learning progress</span><span></span></div><div class="progress-bar-outer"><div class="progress-bar-inner" id="progress-bar"></div></div></div>
+            <div class="resource-list" id="resource-list" style="margin-top:14px"></div>
+          </div>
+
+          <div class="os-card share-card" style="margin-top:16px">
+            <p><strong style="color:var(--ink)">Ready to share?</strong> Download a compact result card for your hackathon demo.</p>
+            <button class="btn" style="background:var(--rust)" onclick="downloadShareCard()">Download result card (PNG)</button>
+          </div>
+          <div class="btn-row" style="margin-top:26px"><button class="btn btn-ghost" onclick="retakeQuiz()">Retake questionnaire</button></div>
+        </div>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="project-modal" onclick="closeProjectModal(event)">
+      <div class="project-modal" onclick="event.stopPropagation()">
+        <div class="modal-top"><div><div class="os-kicker" id="modal-tag">Recommended project</div><h2 id="modal-title">Project title</h2></div><button class="modal-close" onclick="closeProjectModal()">×</button></div>
+        <p class="modal-desc" id="modal-desc"></p>
+        <div class="modal-cols"><div class="modal-box"><strong>Skills you'll prove</strong><p id="modal-skills"></p></div><div class="modal-box"><strong>Time & difficulty</strong><p id="modal-meta"></p></div></div>
+        <div class="modal-box"><strong>Build sequence</strong><ol class="modal-steps" id="modal-steps"></ol></div>
+        <div class="btn-row" style="margin-top:18px"><button class="btn" onclick="closeProjectModal()">Add to my plan ✓</button></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<canvas id="share-canvas" width="900" height="1150" style="display:none;"></canvas>
+
+<script>
+/* ---------- DATA ---------- */
+
+const QUESTIONS = [
+  { text: "When starting something new, what feels most natural?", options: [
+      { label: "Digging into numbers until a pattern shows up", scores: {data:3, design:0, dev:1} },
+      { label: "Sketching how something should look and feel", scores: {data:0, design:3, dev:1} },
+      { label: "Tinkering until it actually works on screen", scores: {data:1, design:1, dev:3} }
+  ]},
+  { text: "What would satisfy you most at the end of a project?", options: [
+      { label: "A clear insight backed by real data", scores: {data:3, design:0, dev:0} },
+      { label: "A design people say feels intuitive", scores: {data:0, design:3, dev:1} },
+      { label: "A working feature people can click through", scores: {data:0, design:1, dev:3} }
+  ]},
+  { text: "Which of these would you enjoy learning deeply?", options: [
+      { label: "Spreadsheets, SQL, or Python for analysis", scores: {data:3, design:0, dev:1} },
+      { label: "Figma and prototyping tools", scores: {data:0, design:3, dev:0} },
+      { label: "HTML, CSS, and JavaScript", scores: {data:1, design:1, dev:3} }
+  ]},
+  { text: "Pick the compliment that would mean the most to you", options: [
+      { label: "\u201cYou really know how to read the data\u201d", scores: {data:3, design:1, dev:0} },
+      { label: "\u201cThat interface felt so easy to use\u201d", scores: {data:0, design:3, dev:0} },
+      { label: "\u201cHow did you build that so fast?\u201d", scores: {data:0, design:0, dev:3} }
+  ]}
+];
+
+const MAX_PER_TRACK = QUESTIONS.length * 3;
+
+const TRACKS = {
+  data: {
+    title: "Data Analyst",
+    color: "#C6712F",
+    desc: "You think in patterns. This track builds the analysis, statistics, and tooling skills to turn raw numbers into decisions.",
+    skills: ["Python / SQL", "Statistics", "Data Visualization", "Excel", "Communication"],
+    resources: [
+      { name: "Google Data Analytics Certificate", url: "https://www.coursera.org/professional-certificates/google-data-analytics" },
+      { name: "freeCodeCamp: Data Analysis with Python", url: "https://www.freecodecamp.org/learn/data-analysis-with-python/" },
+      { name: "Kaggle Learn (free micro-courses)", url: "https://www.kaggle.com/learn" },
+      { name: "NPTEL / Swayam course catalog", url: "https://onlinecourses.nptel.ac.in/" },
+      { name: "SQL tutorial (Mode Analytics)", url: "https://mode.com/sql-tutorial/" },
+      { name: "freeCodeCamp YouTube channel", url: "https://www.youtube.com/@freecodecamp" }
+    ]
+  },
+  design: {
+    title: "UI/UX Designer",
+    color: "#1F6F63",
+    desc: "You think in flows and feelings. This track builds the research, wireframing, and visual design skills behind products people enjoy using.",
+    skills: ["Figma / Prototyping", "User Research", "Visual Design", "Wireframing", "Communication"],
+    resources: [
+      { name: "Google UX Design Certificate", url: "https://www.coursera.org/professional-certificates/google-ux-design" },
+      { name: "Figma's official learn-design resources", url: "https://www.figma.com/resources/learn-design/" },
+      { name: "Laws of UX (reference)", url: "https://lawsofux.com/" },
+      { name: "Nielsen Norman Group articles", url: "https://www.nngroup.com/articles/" },
+      { name: "Dribbble (for inspiration and trends)", url: "https://dribbble.com/" },
+      { name: "freeCodeCamp YouTube channel", url: "https://www.youtube.com/@freecodecamp" }
+    ]
+  },
+  dev: {
+    title: "Web Developer",
+    color: "#20263B",
+    desc: "You think in logic and structure. This track builds the front-end and problem-solving skills to ship real, working software.",
+    skills: ["HTML & CSS", "JavaScript", "Git & Version Control", "Problem Solving", "Debugging"],
+    resources: [
+      { name: "freeCodeCamp: Responsive Web Design", url: "https://www.freecodecamp.org/learn/2022/responsive-web-design/" },
+      { name: "MDN Web Docs — Learn web development", url: "https://developer.mozilla.org/en-US/docs/Learn" },
+      { name: "The Odin Project", url: "https://www.theodinproject.com/" },
+      { name: "JavaScript.info", url: "https://javascript.info/" },
+      { name: "NPTEL / Swayam course catalog", url: "https://onlinecourses.nptel.ac.in/" },
+      { name: "freeCodeCamp YouTube channel", url: "https://www.youtube.com/@freecodecamp" }
+    ]
+  }
+};
+
+const SKILL_KEYWORDS = {
+  "Python / SQL": ["python","sql","mysql","postgres","pandas","numpy"],
+  "Statistics": ["statistics","statistical","regression","hypothesis","probability"],
+  "Data Visualization": ["tableau","power bi","matplotlib","visualization","dashboard"],
+  "Excel": ["excel","spreadsheet","vlookup","pivot table"],
+  "Communication": ["presentation","communication","stakeholder","report writing","public speaking"],
+  "Figma / Prototyping": ["figma","prototype","prototyping","sketch","adobe xd"],
+  "User Research": ["user research","usability","user interview","persona","user testing"],
+  "Visual Design": ["typography","visual design","branding","color theory","illustration"],
+  "Wireframing": ["wireframe","wireframing","low-fidelity","mockup"],
+  "HTML & CSS": ["html","css","responsive design","flexbox","tailwind"],
+  "JavaScript": ["javascript","react","node","typescript","vue"],
+  "Git & Version Control": ["git","github","version control","gitlab"],
+  "Problem Solving": ["problem solving","algorithm","data structure","logic"],
+  "Debugging": ["debug","debugging","troubleshoot","unit test","testing"]
+};
+
+const TARGET_LEVEL = 4; // out of 5, "career ready" bar
+
+/* ---------- STATE ---------- */
+
+const STORAGE_KEY = "pathfinder_state_v2";
+let state = loadState();
+let currentQuestion = 0;
+let answerScores = [];
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return { matchedTrack: null, trackPct: null, skillLevels: null, checked: {} };
+}
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+/* ---------- NAVIGATION ---------- */
+
+function goTo(screen) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById("screen-" + screen).classList.add("active");
+  if (screen === "quiz") { currentQuestion = 0; answerScores = []; renderQuestion(); }
+  if (screen === "dashboard") { renderDashboard(); }
+}
+
+/* ---------- QUIZ ---------- */
+
+function renderQuestion() {
+  const q = QUESTIONS[currentQuestion];
+  document.getElementById("q-count").textContent = `Question ${currentQuestion + 1} of ${QUESTIONS.length}`;
+  document.getElementById("q-text").textContent = q.text;
+  const optionsEl = document.getElementById("q-options");
+  optionsEl.innerHTML = "";
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.className = "option";
+    btn.textContent = opt.label;
+    btn.onclick = () => selectOption(i);
+    optionsEl.appendChild(btn);
+  });
+  document.getElementById("btn-back").style.visibility = currentQuestion === 0 ? "hidden" : "visible";
+  const track = document.getElementById("quiz-progress");
+  track.innerHTML = "";
+  QUESTIONS.forEach((_, i) => {
+    const seg = document.createElement("div");
+    seg.className = "seg" + (i < currentQuestion ? " done" : i === currentQuestion ? " current" : "");
+    track.appendChild(seg);
+  });
+}
+
+function selectOption(index) {
+  answerScores[currentQuestion] = QUESTIONS[currentQuestion].options[index].scores;
+  if (currentQuestion < QUESTIONS.length - 1) { currentQuestion++; renderQuestion(); }
+  else { goTo('resume'); }
+}
+function prevQuestion() { if (currentQuestion > 0) { currentQuestion--; renderQuestion(); } }
+function retakeQuiz() { goTo("quiz"); }
+
+/* ---------- RESUME / SKIP ---------- */
+
+function submitResume() {
+  const text = document.getElementById("resume-text").value || "";
+  runAnalysis(text);
+}
+function skipResume() { state.resumeText=""; saveState(); runAnalysis(""); }
+
+function runAnalysis(resumeText) {
+  goTo('analyzing');
+  document.getElementById('analyzing-line').textContent = resumeText.trim()
+    ? "Matching your resume against the skills each track needs…"
+    : "Scoring your answers across all three tracks…";
+
+  setTimeout(() => {
+    // 1. Tally weighted track scores from quiz
+    const totals = { data: 0, design: 0, dev: 0 };
+    answerScores.forEach(s => { totals.data += s.data; totals.design += s.design; totals.dev += s.dev; });
+    const trackPct = {
+      data: Math.round((totals.data / MAX_PER_TRACK) * 100),
+      design: Math.round((totals.design / MAX_PER_TRACK) * 100),
+      dev: Math.round((totals.dev / MAX_PER_TRACK) * 100)
+    };
+    let winner = "data", best = -1;
+    Object.keys(trackPct).forEach(k => { if (trackPct[k] > best) { best = trackPct[k]; winner = k; } });
+
+    // 2. Analyze resume text (or fall back to a flat baseline)
+    const skillLevels = {};
+    const lowerText = resumeText.toLowerCase();
+    Object.keys(SKILL_KEYWORDS).forEach(skill => {
+      if (!resumeText.trim()) { skillLevels[skill] = 1; return; }
+      let matches = 0;
+      SKILL_KEYWORDS[skill].forEach(kw => { if (lowerText.indexOf(kw) !== -1) matches++; });
+      skillLevels[skill] = Math.max(1, Math.min(5, 1 + matches));
+    });
+
+    state.matchedTrack = winner;
+    state.trackPct = trackPct;
+    state.skillLevels = skillLevels;
+    state.resumeProvided = !!resumeText.trim();
+    saveState();
+    goTo('dashboard');
+  }, 1100);
+}
+
+/* ---------- RADAR CHART (generic) ---------- */
+
+function drawRadar(canvas, axesLabels, series, opts) {
+  opts = opts || {};
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+  const cx = w / 2, cy = h / 2 - 6;
+  const radius = Math.min(w, h) / 2 - (opts.labelPad || 46);
+  const n = axesLabels.length;
+  const rings = 4;
+
+  ctx.strokeStyle = "#DDD4C0";
+  ctx.fillStyle = "#8A8370";
+  ctx.font = "11px Inter, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  // rings
+  for (let r = 1; r <= rings; r++) {
+    ctx.beginPath();
+    for (let i = 0; i <= n; i++) {
+      const angle = (Math.PI * 2 * i) / n - Math.PI / 2;
+      const rr = (radius * r) / rings;
+      const x = cx + rr * Math.cos(angle);
+      const y = cy + rr * Math.sin(angle);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+
+  // axes + labels
+  for (let i = 0; i < n; i++) {
+    const angle = (Math.PI * 2 * i) / n - Math.PI / 2;
+    const x = cx + radius * Math.cos(angle);
+    const y = cy + radius * Math.sin(angle);
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    const lx = cx + (radius + 24) * Math.cos(angle);
+    const ly = cy + (radius + 22) * Math.sin(angle);
+    ctx.fillStyle = "#545B72";
+    const words = axesLabels[i].split(" ");
+    if (words.join(" ").length > 12 && words.length > 1) {
+      const mid = Math.ceil(words.length / 2);
+      ctx.fillText(words.slice(0, mid).join(" "), lx, ly - 6);
+      ctx.fillText(words.slice(mid).join(" "), lx, ly + 6);
+    } else {
+      ctx.fillText(axesLabels[i], lx, ly);
+    }
+  }
+
+  // series polygons
+  series.forEach(s => {
+    ctx.beginPath();
+    for (let i = 0; i <= n; i++) {
+      const idx = i % n;
+      const angle = (Math.PI * 2 * idx) / n - Math.PI / 2;
+      const rr = radius * Math.max(0, Math.min(1, s.values[idx]));
+      const x = cx + rr * Math.cos(angle);
+      const y = cy + rr * Math.sin(angle);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    if (s.dashed) ctx.setLineDash([5, 4]); else ctx.setLineDash([]);
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    if (!s.dashed) {
+      ctx.fillStyle = s.color + "33";
+      ctx.fill();
+    }
+    ctx.setLineDash([]);
+  });
+}
+
+/* ---------- DASHBOARD ---------- */
+
+function getCareerTwin(trackId, pct, levels) {
+  const fit = pct[trackId] || 0;
+  const track = TRACKS[trackId];
+  const skillAvg = track.skills.reduce((sum, s) => sum + (levels[s] || 1), 0) / track.skills.length;
+  const readiness = Math.round((skillAvg / TARGET_LEVEL) * 100);
+  const potential = Math.min(98, Math.round(fit * 0.7 + readiness * 0.3 + 8));
+
+  const profiles = {
+    data: {
+      name: "Analytical Builder",
+      desc: "You naturally look for patterns, evidence and measurable outcomes. Your strongest path combines structured thinking with practical problem-solving.",
+      reasons: ["Pattern recognition", "Evidence-led thinking", "Practical problem solving"]
+    },
+    design: {
+      name: "Human-Centered Creator",
+      desc: "You naturally think about how people experience things. Your strongest path combines empathy, visual thinking and product intuition.",
+      reasons: ["User empathy", "Visual thinking", "Experience design"]
+    },
+    dev: {
+      name: "Productive Maker",
+      desc: "You like turning ideas into working things. Your strongest path combines logic, experimentation and the satisfaction of shipping.",
+      reasons: ["Builder mindset", "Logical thinking", "Fast experimentation"]
+    }
+  };
+
+  return { ...profiles[trackId], readiness, potential, skillAvg };
+}
+
+function startMission() {
+  const trackId = state.matchedTrack || "data";
+  const track = TRACKS[trackId];
+  const levels = state.skillLevels || {};
+  const gaps = track.skills
+    .map(s => ({ skill: s, gap: TARGET_LEVEL - (levels[s] || 1) }))
+    .filter(g => g.gap > 0)
+    .sort((a,b) => b.gap - a.gap);
+  const top = gaps[0]?.skill || track.skills[0];
+
+  const missionMap = {
+    "Python / SQL": "Practice SQL SELECT, WHERE and JOIN queries using a small dataset.",
+    "Statistics": "Review mean, distributions and basic hypothesis testing with five practice questions.",
+    "Data Visualization": "Create one clear chart and write three insights from a dataset.",
+    "Excel": "Build a small spreadsheet using formulas, filters and a pivot table.",
+    "Communication": "Turn one project result into a 60-second explanation for a non-technical audience.",
+    "Figma / Prototyping": "Create a simple mobile flow with three screens and a clickable prototype.",
+    "User Research": "Write five user interview questions and identify the assumptions they test.",
+    "Visual Design": "Redesign one screen using typography, spacing and hierarchy deliberately.",
+    "Wireframing": "Sketch a low-fidelity flow for one core user task.",
+    "HTML & CSS": "Build a responsive landing section using semantic HTML and modern CSS.",
+    "JavaScript": "Build one small interactive component using JavaScript event handling.",
+    "Git & Version Control": "Create a clean Git workflow: branch, commit, merge and write a useful commit message.",
+    "Problem Solving": "Solve three small programming problems and explain your approach before coding.",
+    "Debugging": "Take a broken feature, reproduce the issue, isolate the cause and document the fix."
+  };
+
+  alert(`Today's Pathfinder mission\n\n${top}\n\n${missionMap[top] || "Spend 30 minutes practicing your biggest skill gap."}\n\nComplete it, then return to Pathfinder and check off a related resource.`);
+}
+
+const PROJECTS = {
+  data:[
+    {tag:"Flagship",title:"E-commerce Intelligence Dashboard",desc:"Turn messy sales data into a decision-ready dashboard with KPIs, trends and recommendations.",skills:"SQL • Python • Visualization",meta:"7–10 days • Intermediate",steps:["Clean and profile the dataset","Write 8–10 business SQL queries","Build KPI calculations and charts","Write three evidence-based recommendations"]},
+    {tag:"Fast win",title:"Student Performance Analyzer",desc:"Explore what factors influence student outcomes and present the findings as a clear story.",skills:"Excel • Statistics • Communication",meta:"3–5 days • Beginner",steps:["Choose a public student dataset","Create summary statistics","Build 3 useful visualizations","Present the top findings in one page"]},
+    {tag:"Stretch",title:"Live Market Insights",desc:"Create a small pipeline that collects data, transforms it and displays fresh insights.",skills:"Python • APIs • Data Viz",meta:"10–14 days • Advanced",steps:["Connect to a public API","Store and clean incoming data","Create a refreshable analysis","Explain limitations and insights"]}
+  ],
+  design:[
+    {tag:"Flagship",title:"Campus Companion Redesign",desc:"Redesign a real student journey from messy problem to tested, clickable experience.",skills:"Research • Figma • Prototyping",meta:"7–10 days • Intermediate",steps:["Interview 3–5 target users","Map the current journey","Design a low-fidelity flow","Prototype and test the final concept"]},
+    {tag:"Fast win",title:"3-Screen UX Case Study",desc:"Take one everyday task and turn it into a polished mini case study.",skills:"Wireframing • Visual Design • UX",meta:"2–4 days • Beginner",steps:["Define one user problem","Sketch three screens","Apply hierarchy and visual system","Write the design rationale"]},
+    {tag:"Stretch",title:"Accessible Design System",desc:"Create a small component library with accessibility decisions documented.",skills:"Figma • Accessibility • Systems",meta:"7–12 days • Advanced",steps:["Audit common UI patterns","Define tokens and components","Document states and accessibility","Build a sample product flow"]}
+  ],
+  dev:[
+    {tag:"Flagship",title:"Smart Student Planner",desc:"Build a responsive planner that turns tasks into a useful, interactive productivity experience.",skills:"HTML • CSS • JavaScript",meta:"7–10 days • Intermediate",steps:["Design the data model","Build the responsive UI","Add local persistence and interactions","Polish, test and deploy"]},
+    {tag:"Fast win",title:"API-Powered Campus App",desc:"Consume a public API and turn live data into a clean web experience.",skills:"JavaScript • APIs • Git",meta:"3–5 days • Beginner",steps:["Choose a useful public API","Build loading and error states","Render and filter the data","Document the project on GitHub"]},
+    {tag:"Stretch",title:"AI Study Copilot",desc:"Build a focused study workflow with prompts, saved sessions and useful feedback.",skills:"JavaScript • APIs • Product",meta:"10–14 days • Advanced",steps:["Define one high-value study workflow","Design the interface","Connect the AI/API layer","Add safety, limits and feedback states"]}
+  ]
+};
+
+function scrollToOS(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:"smooth",block:"start"});}
+function openProjectModal(index){
+  const trackId=state.matchedTrack||"data", project=PROJECTS[trackId][index]; if(!project)return;
+  document.getElementById("modal-tag").textContent=project.tag;
+  document.getElementById("modal-title").textContent=project.title;
+  document.getElementById("modal-desc").textContent=project.desc;
+  document.getElementById("modal-skills").textContent=project.skills;
+  document.getElementById("modal-meta").textContent=project.meta;
+  document.getElementById("modal-steps").innerHTML=project.steps.map(s=>`<li>${s}</li>`).join("");
+  document.getElementById("project-modal").classList.add("open");
+}
+function closeProjectModal(event){if(event&&event.target&&event.target.id!=="project-modal")return;document.getElementById("project-modal").classList.remove("open");}
+function generateProjects(){
+  const trackId=state.matchedTrack||"data",grid=document.getElementById("project-grid");
+  grid.innerHTML=PROJECTS[trackId].map((p,i)=>`<article class="project"><span class="project-tag">${p.tag}</span><h3>${p.title}</h3><p>${p.desc}</p><div class="project-foot"><span class="project-skills">${p.skills}</span><button class="project-btn" onclick="openProjectModal(${i})">View plan →</button></div></article>`).join("");
+}
+function buildRoadmap(trackId){
+  const names={
+    data:["Foundations","Core analytics","Portfolio proof","Advanced analysis","Interview prep","Career launch"],
+    design:["UX foundations","Research sprint","Portfolio case study","Design system","Portfolio polish","Career launch"],
+    dev:["Web foundations","JavaScript build","Ship a project","Engineering habits","Interview prep","Career launch"]
+  };
+  const descs={
+    data:["Audit your baseline","Close your biggest gap","Build flagship project","Add depth + polish","Practice explaining work","Apply with proof"],
+    design:["Understand users","Test assumptions","Document the process","Strengthen systems","Polish your story","Apply with proof"],
+    dev:["HTML + CSS","JS + APIs","Deploy something real","Git + debugging","Practice problems","Apply with proof"]
+  };
+  const twin=getCareerTwin(trackId,state.trackPct||{data:33,design:33,dev:34},state.skillLevels||{});
+  const current=twin.readiness>=80?3:twin.readiness>=65?2:1;
+  return names[trackId].map((name,i)=>({name,desc:descs[trackId][i],state:i<current?"done":i===current?"current":"future"}));
+}
+
+function renderDashboard(){
+  const trackId=state.matchedTrack||"data",track=TRACKS[trackId],pct=state.trackPct||{data:33,design:33,dev:34},levels=state.skillLevels||{},twin=getCareerTwin(trackId,pct,levels);
+  document.getElementById("side-track").textContent=track.title;
+  document.getElementById("twin-name").textContent=twin.name;
+  document.getElementById("twin-desc").textContent=twin.desc;
+  document.getElementById("hero-fit").textContent=pct[trackId]+"%";
+  document.getElementById("hero-fit-bar").style.width=pct[trackId]+"%";
+  document.getElementById("hero-fit-note").textContent=track.title+" is your strongest match";
+  document.getElementById("hero-readiness").textContent=twin.readiness+"%";
+  document.getElementById("hero-readiness-bar").style.width=Math.min(100,twin.readiness)+"%";
+  document.getElementById("readiness-ring").style.setProperty("--score",twin.readiness);
+  document.getElementById("ring-score").textContent=twin.readiness+"%";
+  document.getElementById("readiness-title").textContent=twin.readiness>=80?"You are close to career-ready":twin.readiness>=60?"You have a strong foundation":"You are building the foundation";
+
+  const gaps=track.skills.map(s=>({skill:s,gap:TARGET_LEVEL-(levels[s]||1)})).filter(g=>g.gap>0).sort((a,b)=>b.gap-a.gap);
+  const topGap=gaps[0]?.skill||track.skills[0];
+  document.getElementById("hero-gap").textContent=topGap;
+
+  const missionDescriptions={
+    "Python / SQL":"Strengthen the technical foundation behind analysis and data work.","Statistics":"Build confidence turning numbers into defensible conclusions.",
+    "Data Visualization":"Practice communicating insights clearly through visual evidence.","Excel":"Build faster, more reliable spreadsheet workflows.",
+    "Communication":"Learn to turn technical work into decisions people understand.","Figma / Prototyping":"Turn ideas into testable product experiences.",
+    "User Research":"Improve your ability to understand real user needs.","Visual Design":"Strengthen hierarchy, typography and visual consistency.",
+    "Wireframing":"Make user flows clearer before moving into visual polish.","HTML & CSS":"Strengthen the foundation for responsive interfaces.",
+    "JavaScript":"Move from static pages to interactive products.","Git & Version Control":"Build professional habits for collaborating on code.",
+    "Problem Solving":"Improve the reasoning that sits underneath technical work.","Debugging":"Become faster at finding and fixing real-world issues."
+  };
+  document.getElementById("mission-title").textContent=`Level up ${topGap}`;
+  document.getElementById("mission-desc").textContent=`${missionDescriptions[topGap]||"This is currently one of your highest-impact gaps."} Completing this first gives you the fastest path toward the career-ready bar.`;
+  const impact=Math.max(1,Math.min(12,(gaps[0]?.gap||1)*3));
+  document.getElementById("mission-impact").textContent=`+${impact} readiness`;
+  document.getElementById("mission-xp").textContent=`+${30+impact*2} XP`;
+
+  const alt=["data","design","dev"].filter(k=>k!==trackId).sort((a,b)=>(pct[b]||0)-(pct[a]||0));
+  document.getElementById("alternative-list").innerHTML=alt.map(k=>`<div class="alternative"><span class="alternative-name">${TRACKS[k].title}</span><span class="alt-bar"><span style="width:${pct[k]}%"></span></span><span class="alternative-score">${pct[k]}%</span></div>`).join("");
+  document.getElementById("explain-grid").innerHTML=twin.reasons.map((r,i)=>`<div class="reason"><strong>0${i+1}</strong><span>${r}</span></div>`).join("");
+
+  document.getElementById("roadmap-list").innerHTML=buildRoadmap(trackId).map((r,i)=>`<div class="road-step ${r.state}"><div class="road-dot">${r.state==="done"?"✓":"0"+(i+1)}</div><strong>Week ${i+1}</strong><span>${r.name}</span><span>${r.desc}</span></div>`).join("");
+  generateProjects();
+
+  const skills=track.skills,currentVals=skills.map(s=>(levels[s]||1)/5),targetVals=skills.map(()=>TARGET_LEVEL/5);
+  drawRadar(document.getElementById("skill-chart"),skills,[{values:targetVals,color:"#20263B",dashed:true},{values:currentVals,color:track.color}]);
+  document.getElementById("gap-sub").textContent=state.resumeProvided?"Based on the experience you pasted, here's where you stand against the career-ready bar.":"No resume was pasted, so Pathfinder starts from a conservative baseline. Add your resume next time for a more personal analysis.";
+  const skillChips=document.getElementById("skill-chips");skillChips.innerHTML="";
+  skills.forEach(s=>{const lvl=levels[s]||1,row=document.createElement("div");row.className="fit-chip";row.innerHTML=`<span class="dot" style="background:${track.color}"></span><span class="name">${s}</span><span class="pct">${lvl}/5</span>`;skillChips.appendChild(row);});
+  document.getElementById("gap-callout").innerHTML=gaps.length?`<strong>Biggest opportunity:</strong> ${gaps.slice(0,2).map(g=>g.skill).join(" and ")}. Pathfinder has prioritized these because closing them should move your readiness fastest.`:`<strong>You're already close to career-ready</strong> across the target skill set. Focus on projects and evidence next.`;
+
+  drawRadar(document.getElementById("fit-chart"),[TRACKS.data.title,TRACKS.design.title,TRACKS.dev.title],[{values:[pct.data/100,pct.design/100,pct.dev/100],color:track.color}]);
+  const fitChips=document.getElementById("fit-chips");fitChips.innerHTML="";
+  ["data","design","dev"].forEach(k=>{const row=document.createElement("div");row.className="fit-chip"+(k===trackId?" winner":"");row.innerHTML=`<span class="dot" style="background:${TRACKS[k].color}"></span><span class="name">${TRACKS[k].title}</span><span class="pct">${pct[k]}%</span>`;fitChips.appendChild(row);});
+
+  const list=document.getElementById("resource-list");list.innerHTML="";
+  track.resources.forEach((res,i)=>{
+    const key=trackId+"_"+i,isChecked=!!state.checked[key],row=document.createElement("div");row.className="resource"+(isChecked?" done":"");
+    const checkbox=document.createElement("input");checkbox.type="checkbox";checkbox.checked=isChecked;checkbox.id="chk_"+key;
+    checkbox.addEventListener("change",()=>{state.checked[key]=checkbox.checked;saveState();row.classList.toggle("done",checkbox.checked);updateProgress(trackId);});
+    const body=document.createElement("div");body.className="resource-body";
+    const label=document.createElement("label");label.className="resource-name";label.htmlFor=checkbox.id;label.textContent=res.name;
+    const link=document.createElement("div");link.className="resource-link";const a=document.createElement("a");a.href=res.url;a.target="_blank";a.rel="noopener";a.textContent="Open resource →";link.appendChild(a);
+    body.appendChild(label);body.appendChild(link);row.appendChild(checkbox);row.appendChild(body);list.appendChild(row);
+  });
+  updateProgress(trackId);
+}
+
+function updateProgress(trackId) {
+  const total = TRACKS[trackId].resources.length;
+  let done = 0;
+  for (let i = 0; i < total; i++) if (state.checked[trackId + "_" + i]) done++;
+  const p = Math.round((done / total) * 100);
+  document.getElementById("progress-pct").textContent = p + "%";
+  document.getElementById("progress-bar").style.width = p + "%";
+}
+
+
+
+
+/* ---------- PHASE 5 OPPORTUNITY ENGINE ---------- */
+
+const P5_ROLES = [
+  {title:"Junior Data Analyst",company:"Analytics & Insights",type:"entry",track:"data",base:74,skills:["Python","SQL","Excel","Data Visualization","Statistics"],why:"Strong first-step role for turning analytical foundations into professional evidence."},
+  {title:"Data Analyst Intern",company:"Product Analytics Team",type:"internship",track:"data",base:80,skills:["Excel","SQL","Data Visualization","Communication"],why:"A lower-barrier route to build real-world analytics evidence while learning on the job."},
+  {title:"BI / Reporting Intern",company:"Business Intelligence",type:"internship",track:"data",base:76,skills:["Excel","Power BI","SQL","Communication"],why:"Great bridge if dashboards and business reporting are your fastest strengths to develop."},
+  {title:"Junior UX Designer",company:"Digital Product Studio",type:"entry",track:"design",base:76,skills:["Figma","User Research","Communication","Data Visualization"],why:"Best suited to candidates who can combine user empathy with structured product thinking."},
+  {title:"UX Research Intern",company:"Experience Research Lab",type:"internship",track:"design",base:79,skills:["User Research","Communication","Figma"],why:"A strong entry route if research, interviews and usability thinking are your next edge."},
+  {title:"Product Design Intern",company:"Early-stage Product Team",type:"internship",track:"design",base:73,skills:["Figma","User Research","HTML/CSS","Communication"],why:"Builds portfolio evidence while exposing you to real product constraints."},
+  {title:"Junior Web Developer",company:"Web Engineering Team",type:"entry",track:"web",base:74,skills:["HTML/CSS","JavaScript","Git/GitHub","Python"],why:"A practical route from frontend foundations to production-quality development work."},
+  {title:"Frontend Developer Intern",company:"Software Products",type:"internship",track:"web",base:78,skills:["HTML/CSS","JavaScript","Git/GitHub","Communication"],why:"Good fit when you want to turn coding knowledge into shipped interface experience."},
+  {title:"Technical Support / Automation Intern",company:"Technology Operations",type:"bridge",track:"web",base:68,skills:["Python","SQL","Communication","Git/GitHub"],why:"A bridge role that can build technical experience while you move toward development."}
+];
+
+function p5TrackKey(){
+  const k=state.matchedTrack||"data";
+  return k==="design"?"design":k==="web"?"web":"data";
+}
+function p5RoleScore(role){
+  const r=p4AnalyzeResume(state.resumeText||"");
+  const detected=new Set(r.detected.map(x=>x.skill.toLowerCase()));
+  let score=role.base;
+  const trackKey=p5TrackKey();
+  if(role.track===trackKey) score+=8;
+  else score-=8;
+  role.skills.forEach(s=>{
+    if(detected.has(s.toLowerCase())) score+=3;
+  });
+  score+=Math.round(r.depth*.08);
+  return Math.max(42,Math.min(96,score));
+}
+function p5RoleGaps(role){
+  const r=p4AnalyzeResume(state.resumeText||"");
+  const detected=new Set(r.detected.map(x=>x.skill.toLowerCase()));
+  return role.skills.filter(s=>!detected.has(s.toLowerCase()));
+}
+function p5Render(filter="all"){
+  const container=document.getElementById("p5-opps");
+  if(!container)return;
+  const roles=P5_ROLES.filter(r=>filter==="all"||r.type===filter)
+    .sort((a,b)=>p5RoleScore(b)-p5RoleScore(a));
+  container.innerHTML=roles.map((role,i)=>{
+    const score=p5RoleScore(role), gaps=p5RoleGaps(role);
+    const r=p4AnalyzeResume(state.resumeText||"");
+    const have=role.skills.length-gaps.length;
+    const typeLabel=role.type==="entry"?"Entry level":role.type==="internship"?"Internship":"Bridge role";
+    return `<article class="p5-opportunity">
+      <div class="p5-top"><span class="p5-type">${typeLabel}</span><span class="p5-match">${score}%</span></div>
+      <h3>${role.title}</h3>
+      <div class="p5-company">${role.company}</div>
+      <div class="p5-meta"><span class="p5-chip">${have}/${role.skills.length} skills evidenced</span><span class="p5-chip">${gaps.length} priority gap${gaps.length===1?"":"s"}</span></div>
+      <div class="p5-skills"><b>Why it fits:</b> ${role.why}</div>
+      <div class="p5-bars">
+        <div class="p5-barrow"><span>Fit</span><div class="p5-bar"><i style="width:${score}%"></i></div><b>${score}%</b></div>
+        <div class="p5-barrow"><span>Evidence</span><div class="p5-bar"><i style="width:${r.depth}%"></i></div><b>${r.depth}%</b></div>
+      </div>
+      <button class="p5-cta" onclick="p5ToggleDetail(${i},'${role.title.replace(/'/g,"\\'")}')">See preparation →</button>
+      <div class="p5-detail" id="p5-detail-${i}">
+        <strong>Preparation plan</strong>
+        <ul>
+          <li><b>You already show:</b> ${role.skills.filter(s=>!gaps.includes(s)).slice(0,4).join(", ")||"limited direct evidence yet"}</li>
+          <li><b>Close first:</b> ${gaps.slice(0,3).join(", ")||"deepen your existing evidence"}</li>
+          <li><b>Portfolio proof:</b> build one small project demonstrating the missing skill.</li>
+        </ul>
+      </div>
+    </article>`;
+  }).join("");
+}
+function p5ToggleDetail(index){
+  const el=document.getElementById(`p5-detail-${index}`);
+  if(el)el.classList.toggle("show");
+}
+function p5Filter(filter,btn){
+  document.querySelectorAll(".p5-filter").forEach(b=>b.classList.remove("active"));
+  if(btn)btn.classList.add("active");
+  p5Render(filter);
+}
+function renderP5Opportunities(){
+  const label=document.getElementById("p5-target-label");
+  if(label) label.textContent=`Based on your ${TRACKS[state.matchedTrack||"data"].title} target`;
+  p5Render("all");
+}
+
+/* Add opportunity rendering to the Phase 4 dashboard hook. */
+const __renderDashboardP5 = window.renderDashboard;
+window.renderDashboard = function(){
+  __renderDashboardP5();
+  renderP5Opportunities();
+  p6Init();
+};
+
+
+
+/* ---------- PHASE 6 CAREER MISSION SYSTEM ---------- */
+
+const P6_MISSIONS = {
+  Python:{
+    title:"Build a Python analysis proof",
+    desc:"Create a small analysis script that cleans a dataset, calculates 3 useful metrics and explains one finding.",
+    tasks:["Choose a small CSV dataset and define one question.","Write a Python script that cleans and analyzes the data.","Save the output and write 3 sentences explaining your finding."],
+    readiness:9
+  },
+  SQL:{
+    title:"Prove your SQL fundamentals",
+    desc:"Build a mini SQL analysis pack that shows you can query, aggregate and explain business data.",
+    tasks:["Create or choose a small relational dataset.","Write 8–10 SQL queries using filters, joins and aggregations.","Pick your 3 strongest queries and explain what each reveals."],
+    readiness:9
+  },
+  Statistics:{
+    title:"Strengthen statistics with evidence",
+    desc:"Turn statistics from a knowledge gap into a demonstrated skill through a short data investigation.",
+    tasks:["Choose a dataset and identify one measurable question.","Calculate summary statistics and compare at least two groups.","Write a short conclusion explaining what the numbers mean."],
+    readiness:10
+  },
+  "Data Visualization":{
+    title:"Build one decision-ready dashboard",
+    desc:"Create a compact dashboard that turns raw data into a clear recommendation.",
+    tasks:["Choose a dataset and select 3–5 meaningful metrics.","Create two charts and one KPI summary.","Write the business recommendation a stakeholder should take away."],
+    readiness:10
+  },
+  Excel:{
+    title:"Create an Excel analysis proof",
+    desc:"Build a small spreadsheet that demonstrates formulas, cleaning and decision-making.",
+    tasks:["Import and clean a small dataset.","Use formulas/pivots to answer three questions.","Create a one-screen summary with your key finding."],
+    readiness:8
+  },
+  Figma:{
+    title:"Prototype one user flow",
+    desc:"Turn a user problem into a clickable Figma flow with a clear interaction story.",
+    tasks:["Define the user, problem and success outcome.","Wireframe the critical flow in 3–5 screens.","Create a clickable prototype and explain one design decision."],
+    readiness:9
+  },
+  Prototyping:{
+    title:"Prototype one user flow",
+    desc:"Turn a user problem into a clickable prototype with a clear interaction story.",
+    tasks:["Define the user, problem and success outcome.","Wireframe the critical flow in 3–5 screens.","Create a clickable prototype and explain one design decision."],
+    readiness:9
+  },
+  "User Research":{
+    title:"Run a lightweight user research study",
+    desc:"Practice turning user feedback into a concrete product insight.",
+    tasks:["Write 5 focused interview/usability questions.","Collect or simulate a small set of responses ethically.","Summarize 3 patterns and one product recommendation."],
+    readiness:9
+  },
+  "HTML/CSS":{
+    title:"Ship a polished responsive page",
+    desc:"Create one responsive page that demonstrates structure, accessibility and visual consistency.",
+    tasks:["Build the semantic page structure.","Add responsive styling for laptop and mobile widths.","Test the page and document two design/technical decisions."],
+    readiness:9
+  },
+  JavaScript:{
+    title:"Add useful interaction with JavaScript",
+    desc:"Turn a static page into an interactive experience that demonstrates real frontend logic.",
+    tasks:["Choose one user interaction and define its expected behavior.","Implement it with JavaScript and clear state handling.","Test edge cases and document what you built."],
+    readiness:10
+  },
+  "Git/GitHub":{
+    title:"Create a clean project history",
+    desc:"Make your work easier to evaluate by showing disciplined version control.",
+    tasks:["Initialize or clean up your project repository.","Make 3 focused commits with meaningful messages.","Write a concise README describing the project and setup."],
+    readiness:7
+  },
+  Communication:{
+    title:"Practice explaining your work",
+    desc:"Create concise evidence that you can communicate technical or design decisions clearly.",
+    tasks:["Write a 60-second explanation of one project.","Explain the problem, your approach and the result.","Record or rehearse it once and remove unnecessary jargon."],
+    readiness:7
+  }
+};
+
+function p6State(){
+  if(!state.p6) state.p6={xp:0,level:1,missions:0,completed:{}};
+  if(!state.p6.completed) state.p6.completed={};
+  return state.p6;
+}
+function p6Gap(){
+  const r=typeof p4AnalyzeResume==="function"?p4AnalyzeResume(state.resumeText||""):{gaps:[]};
+  const candidates=(r.gaps||[]).map(g=>g.skill);
+  const track=state.matchedTrack||"data";
+  const fallback=track==="design"?["Figma","User Research","Communication"]:track==="web"?["JavaScript","HTML/CSS","Git/GitHub"]:[ "Python","SQL","Statistics","Data Visualization","Excel"];
+  return candidates.find(x=>P6_MISSIONS[x]) || fallback.find(x=>P6_MISSIONS[x]) || "Communication";
+}
+function p6Render(){
+  const s=p6State(), gap=p6Gap(), m=P6_MISSIONS[gap];
+  const title=document.getElementById("p6-title"),desc=document.getElementById("p6-desc");
+  if(title)title.textContent=m.title;
+  if(desc)desc.textContent=m.desc;
+  const ready=document.getElementById("p6-ready"); if(ready)ready.textContent=`+${m.readiness} readiness`;
+  const completed=(s.completed[gap]||[]).filter(Boolean).length;
+  const pct=Math.round(completed/m.tasks.length*100);
+  const prog=document.getElementById("p6-progress"); if(prog)prog.style.width=pct+"%";
+  const label=document.getElementById("p6-progress-label"); if(label)label.textContent=`${completed} of ${m.tasks.length} tasks complete`;
+  const xp=document.getElementById("p6-xp");if(xp)xp.textContent=s.xp;
+  const lvl=document.getElementById("p6-level");if(lvl)lvl.textContent=s.level;
+  const missions=document.getElementById("p6-missions");if(missions)missions.textContent=s.missions;
+}
+function p6OpenMission(){
+  const gap=p6Gap(),m=P6_MISSIONS[gap],s=p6State(),done=s.completed[gap]||[];
+  const title=document.getElementById("p6-modal-title"),desc=document.getElementById("p6-modal-desc"),tasks=document.getElementById("p6-tasks");
+  if(title)title.textContent=m.title;
+  if(desc)desc.textContent=m.desc;
+  if(tasks)tasks.innerHTML=m.tasks.map((t,i)=>`<div class="p6-task"><input id="p6-task-${i}" type="checkbox" ${done[i]?"checked":""} onchange="p6SaveTask(${i})"><label for="p6-task-${i}">${t}</label></div>`).join("");
+  document.getElementById("p6-modal-backdrop")?.classList.add("show");
+}
+function p6SaveTask(i){
+  const gap=p6Gap(),s=p6State();
+  if(!s.completed[gap])s.completed[gap]=[];
+  s.completed[gap][i]=document.getElementById(`p6-task-${i}`)?.checked||false;
+  localStorage.setItem("pathfinder_state_v2",JSON.stringify(state));
+  p6Render();
+}
+function p6CompleteMission(){
+  const gap=p6Gap(),m=P6_MISSIONS[gap],s=p6State(),done=s.completed[gap]||[];
+  if(done.filter(Boolean).length<m.tasks.length){
+    p6Toast("Complete all 3 tasks before claiming the mission.");
+    return;
+  }
+  if(!s.completed[gap+"_claimed"]){
+    s.xp+=48;s.missions+=1;s.completed[gap+"_claimed"]=true;
+    s.level=Math.max(1,Math.floor(s.xp/100)+1);
+    localStorage.setItem("pathfinder_state_v2",JSON.stringify(state));
+    p6Toast(`Mission complete! +48 XP · ${m.readiness} readiness`);
+  }else{
+    p6Toast("Mission already claimed. Keep building proof!");
+  }
+  p6Render();p6CloseMission();
+}
+function p6CloseMission(){document.getElementById("p6-modal-backdrop")?.classList.remove("show")}
+function p6Toast(msg){
+  const el=document.getElementById("p6-toast");if(!el)return;
+  el.textContent=msg;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2600);
+}
+function p6Init(){
+  p6Render();
+}
+
+/* ---------- PHASE 4 RESUME INTELLIGENCE ---------- */
+
+const P4_PATTERNS = {
+  skills: {
+    "Python":["python","pandas","numpy","matplotlib","scikit-learn"],
+    "SQL":["sql","mysql","postgresql","postgres","sqlite","queries"],
+    "Excel":["excel","spreadsheet","vlookup","pivot table","pivot tables"],
+    "Power BI":["power bi","powerbi","dax"],
+    "Tableau":["tableau"],
+    "Figma":["figma","prototype","prototyping","wireframe","wireframing"],
+    "User Research":["user research","usability","user interview","usability testing"],
+    "JavaScript":["javascript","js","react","node.js","nodejs"],
+    "HTML/CSS":["html","css","responsive design"],
+    "Git/GitHub":["git","github","version control"],
+    "Data Visualization":["data visualization","dashboard","charts","visualization"],
+    "Statistics":["statistics","statistical","regression","hypothesis testing"],
+    "Communication":["stakeholder","presentation","presented","communication","team"]
+  },
+  education:["bachelor","b.tech","btech","b.sc","bsc","master","m.tech","mca","degree","university","college","school"],
+  projects:["project","built","developed","created","designed","implemented","deployed","prototype"],
+  experience:["intern","internship","experience","worked","employment","company","organization","role"],
+  certifications:["certified","certification","certificate","course","credential"],
+  leadership:["lead","led","volunteer","club","hackathon","organised","organized","mentor"]
+};
+
+function p4AnalyzeResume(text){
+  const raw=(text||"").trim();
+  const lower=raw.toLowerCase();
+  const detected=[];
+  Object.entries(P4_PATTERNS.skills).forEach(([skill,terms])=>{
+    const hits=terms.filter(t=>lower.includes(t));
+    if(hits.length) detected.push({skill,hits,score:Math.min(100,30+hits.length*18)});
+  });
+
+  const signals=[];
+  const counts={
+    education:P4_PATTERNS.education.filter(t=>lower.includes(t)).length,
+    projects:P4_PATTERNS.projects.filter(t=>lower.includes(t)).length,
+    experience:P4_PATTERNS.experience.filter(t=>lower.includes(t)).length,
+    certifications:P4_PATTERNS.certifications.filter(t=>lower.includes(t)).length,
+    leadership:P4_PATTERNS.leadership.filter(t=>lower.includes(t)).length
+  };
+  if(counts.projects) signals.push(["Project evidence",`Found ${counts.projects} build/action signals in your experience.`,true]);
+  if(counts.experience) signals.push(["Experience",`Found ${counts.experience} experience indicators.`,true]);
+  if(counts.education) signals.push(["Education",`Found ${counts.education} education indicators.`,true]);
+  if(counts.certifications) signals.push(["Credentials",`Found ${counts.certifications} learning/certification indicators.`,true]);
+  if(counts.leadership) signals.push(["Leadership",`Found ${counts.leadership} leadership/community indicators.`,true]);
+
+  const track=TRACKS[state.matchedTrack||"data"];
+  const present=track.skills.filter(s=>detected.some(d=>d.skill.toLowerCase().includes(s.toLowerCase())||s.toLowerCase().includes(d.skill.toLowerCase())));
+  const missing=track.skills.filter(s=>!present.includes(s));
+  const depth=Math.min(100,Math.round(
+    Math.min(45,detected.length*7)+
+    Math.min(20,counts.projects*5)+
+    Math.min(15,counts.experience*5)+
+    Math.min(10,counts.education*5)+
+    Math.min(10,(counts.certifications+counts.leadership)*3)
+  ));
+
+  return {detected,signals,counts,missing,present,depth,hasResume:!!raw};
+}
+
+function renderP4ResumeIntelligence(){
+  const r=p4AnalyzeResume(state.resumeText||"");
+  const track=TRACKS[state.matchedTrack||"data"];
+  const allText=(state.resumeText||"").trim();
+  const nameMatch=allText.match(/(?:name\s*[:\-]\s*|^)([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+){1,3})/m);
+  const name=(nameMatch&&nameMatch[1]&&nameMatch[1].length<45)?nameMatch[1]:"Career candidate";
+  const avatar=name.split(/\s+/).map(x=>x[0]).slice(0,2).join("").toUpperCase();
+
+  document.getElementById("p4-avatar").textContent=avatar||"P";
+  document.getElementById("p4-name").textContent=name;
+  document.getElementById("p4-headline").textContent=r.hasResume
+    ? `${track.title} profile · evidence mapped from your submitted experience`
+    : "No resume provided · add one to unlock deeper evidence mapping";
+  document.getElementById("p4-skills-count").textContent=r.detected.length;
+  document.getElementById("p4-evidence-count").textContent=r.signals.length;
+  document.getElementById("p4-depth").textContent=r.depth+"%";
+
+  const tags=document.getElementById("p4-tags");
+  tags.innerHTML=(r.detected.slice(0,6).map(x=>`<span class="p4-tag">${x.skill}</span>`).join("")||
+    '<span class="p4-tag">No skills detected yet</span>');
+
+  const map=document.getElementById("p4-skill-map");
+  map.innerHTML=r.detected.slice(0,8).map(x=>
+    `<div class="p4-signal"><span style="font-size:10px">${x.skill}</span><div class="bar"><i style="width:${x.score}%"></i></div><strong>${x.score}%</strong></div>`
+  ).join("") || '<div class="p4-upload-note">Paste a resume or LinkedIn summary during onboarding to populate this map.</div>';
+
+  const ev=document.getElementById("p4-evidence-list");
+  ev.innerHTML=(r.signals.map(s=>`<div class="p4-evidence positive"><b>${s[0]}</b><small>${s[1]}</small></div>`).join("")||
+    '<div class="p4-evidence gap"><b>Evidence needed</b><small>Your profile is currently based mainly on questionnaire signals.</small></div>');
+
+  if(r.missing.length){
+    ev.innerHTML += `<div class="p4-evidence gap"><b>Highest-impact gaps</b><small>${r.missing.slice(0,3).join(" · ")} — these are the skills most worth strengthening next.</small></div>`;
+  }
+  document.getElementById("p4-source-note").textContent=r.hasResume
+    ? "✓ Resume intelligence completed locally in your browser. Your pasted text is used only for this session."
+    : "Add a resume during onboarding for deeper evidence. Pathfinder will still work without one.";
+
+  const next=r.missing[0]||track.skills[0];
+  document.getElementById("p4-next-title").textContent=`Next best move: strengthen ${next}`;
+  document.getElementById("p4-next-desc").textContent=
+    `This is the most direct way to improve your ${track.title} readiness from the evidence Pathfinder has today.`;
+}
+
+/* Patch analysis so structured resume intelligence is saved with the profile. */
+const __runAnalysisP4 = window.runAnalysis;
+window.runAnalysis = function(resumeText){
+  state.resumeText=resumeText||"";
+  state.resumeIntel=p4AnalyzeResume(state.resumeText);
+  saveState();
+  return __runAnalysisP4(resumeText);
+};
+
+/* Patch dashboard rendering once the existing renderer has completed. */
+const __renderDashboardP4 = window.renderDashboard;
+window.renderDashboard = function(){
+  __renderDashboardP4();
+  renderP4ResumeIntelligence();
+};
+
+/* Allow the user to jump directly to resume intelligence from the sidebar. */
+function scrollToResumeIntelligence(){
+  const el=document.getElementById("resume-intelligence");
+  if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+
+/* ---------- PHASE 3 PRODUCT LOGIC ---------- */
+
+const P3_BADGES = [
+  ["🧭","Profile decoded","Complete your career analysis."],
+  ["🧠","Career Twin","Receive an explainable career match."],
+  ["🎯","Mission starter","Start your first daily mission."],
+  ["📚","First resource","Complete one learning resource."],
+  ["🛠️","Builder","Complete your first portfolio step."],
+  ["🚀","Career ready","Reach 80% readiness."]
+];
+
+function p3ShowToast(message){
+  const el=document.getElementById("p3-toast");
+  if(!el)return;
+  el.textContent=message; el.classList.add("show");
+  clearTimeout(window.__p3Toast);
+  window.__p3Toast=setTimeout(()=>el.classList.remove("show"),2600);
+}
+
+function p3GetXP(){
+  const checked=state.checked||{};
+  const resourceXP=Object.values(checked).filter(Boolean).length*80;
+  const missionXP=state.missionStarted?120:0;
+  const builderXP=Object.values(state.builder||{}).filter(Boolean).length*60;
+  return Math.min(2500,200+resourceXP+missionXP+builderXP);
+}
+
+function renderP3XP(){
+  const xp=p3GetXP(), level=Math.max(1,Math.floor(xp/500)+1);
+  const within=xp%500, pct=Math.min(100,(within/500)*100);
+  const l=document.getElementById("xp-level"),f=document.getElementById("xp-fill"),t=document.getElementById("xp-text");
+  if(l)l.textContent=`LEVEL ${level}`;
+  if(f)f.style.width=pct+"%";
+  if(t)t.textContent=`${within} / 500 XP`;
+}
+
+function buildEvidence(trackId, levels, pct){
+  const track=TRACKS[trackId];
+  const resume=state.resumeText||"";
+  const hasResume=!!resume.trim();
+  const interest=Math.round(pct[trackId]||0);
+  const avg=track.skills.reduce((a,s)=>a+(levels[s]||1),0)/(track.skills.length*5);
+  const skill=Math.round(avg*100);
+  const confidence=Math.round(Math.min(96,(interest*.45)+(skill*.35)+(hasResume?20:8)));
+  document.getElementById("e-interest").textContent=interest+"%";
+  document.getElementById("e-skill").textContent=skill+"%";
+  document.getElementById("e-confidence").textContent=confidence+"%";
+  document.getElementById("evidence-list").innerHTML=track.skills.map(s=>{
+    const v=Math.round(((levels[s]||1)/5)*100);
+    return `<div class="p3-evidence-row"><span>${s}</span><div class="bar"><i style="width:${v}%"></i></div><strong>${v}%</strong></div>`;
+  }).join("");
+}
+
+function buildCareerCompare(pct, trackId){
+  const order=["data","design","dev"];
+  const effort={data:"6–10 wks",design:"5–9 wks",dev:"7–12 wks"};
+  const labels={data:"Data Analyst",design:"UI/UX Designer",dev:"Web Developer"};
+  document.getElementById("career-compare").innerHTML=order.map(k=>{
+    const score=pct[k]||0, best=k===trackId;
+    return `<div class="p3-career ${best?"best":""}">
+      ${best?'<span class="badge">Best fit</span>':""}
+      <h3>${labels[k]}</h3><div class="match">${score}%</div>
+      <div class="tiny">Fit score</div><div class="p3-meter"><i style="width:${score}%"></i></div>
+      <div class="tiny">Typical Pathfinder effort: <strong>${effort[k]}</strong></div>
+    </div>`;
+  }).join("");
+}
+
+function renderAchievements(){
+  const checked=Object.values(state.checked||{}).filter(Boolean).length;
+  const builderDone=Object.values(state.builder||{}).filter(Boolean).length;
+  const readiness=(getCareerTwin(state.matchedTrack||"data",state.trackPct||{data:33,design:33,dev:34},state.skillLevels||{}).readiness);
+  const earned=[
+    true,
+    !!state.matchedTrack,
+    !!state.missionStarted,
+    checked>0,
+    builderDone>0,
+    readiness>=80
+  ];
+  document.getElementById("achievement-grid").innerHTML=P3_BADGES.map((b,i)=>
+    `<div class="p3-badge ${earned[i]?"":"locked"}"><div class="ico">${b[0]}</div><strong>${b[1]}</strong><span>${earned[i]?"Unlocked":"Locked"} · ${b[2]}</span></div>`
+  ).join("");
+}
+
+function getBuilderProject(){
+  const trackId=state.matchedTrack||"data";
+  return (PROJECTS[trackId]||PROJECTS.data)[0];
+}
+
+function renderBuilder(){
+  const p=getBuilderProject();
+  const title=document.getElementById("builder-title"),desc=document.getElementById("builder-desc");
+  if(title)title.textContent=p.title;
+  if(desc)desc.textContent=p.desc+" Build this to create concrete evidence for your target role.";
+  const steps=p.steps||["Define the problem","Design the solution","Build the prototype","Test with users","Document results","Publish the case study"];
+  state.builder=state.builder||{};
+  const done=steps.filter((_,i)=>state.builder[i]).length;
+  const percent=Math.round((done/steps.length)*100);
+  const bar=document.getElementById("builder-bar"), badge=document.getElementById("builder-percent");
+  if(bar)bar.style.width=percent+"%";
+  if(badge)badge.textContent=percent+"% complete";
+  const list=document.getElementById("builder-list");
+  if(list)list.innerHTML=steps.map((s,i)=>`<label class="p3-check ${state.builder[i]?"done":""}">
+    <input type="checkbox" ${state.builder[i]?"checked":""} onchange="toggleBuilderStep(${i},this.checked)"> ${s}
+  </label>`).join("");
+}
+
+function toggleBuilderStep(i,val){
+  state.builder=state.builder||{};
+  state.builder[i]=val; saveState(); renderBuilder(); renderP3XP(); renderAchievements();
+  if(val)p3ShowToast("Portfolio evidence added · +60 XP");
+}
+
+function startBuilder(){
+  state.builder=state.builder||{};
+  if(!Object.values(state.builder).some(Boolean))state.builder[0]=true;
+  saveState();renderBuilder();renderP3XP();renderAchievements();
+  p3ShowToast("Portfolio build started · your first proof step is active");
+}
+
+function resetBuilder(){
+  state.builder={}; saveState();renderBuilder();renderP3XP();renderAchievements();
+  p3ShowToast("Builder reset");
+}
+
+function claimAchievement(){
+  const checked=Object.values(state.checked||{}).filter(Boolean).length;
+  const builder=Object.values(state.builder||{}).filter(Boolean).length;
+  if(!state.missionStarted){state.missionStarted=true;saveState();renderP3XP();renderAchievements();p3ShowToast("Mission Starter unlocked · +120 XP");return;}
+  if(checked===0){p3ShowToast("Complete one learning resource to unlock the next badge.");return;}
+  if(builder===0){p3ShowToast("Start your portfolio build to unlock the Builder badge.");return;}
+  p3ShowToast("You're building momentum — keep closing the gaps.");
+}
+
+function simulateEvidence(){
+  const id=state.matchedTrack||"data";
+  state.evidenceBoosted=true;
+  saveState();
+  const pct=state.trackPct||{data:33,design:33,dev:34};
+  const levels=state.skillLevels||{};
+  buildEvidence(id,levels,pct);
+  p3ShowToast("Evidence review refreshed — recommendation explained.");
+}
+
+function openEvidenceModal(){document.getElementById("evidence-modal").classList.add("open")}
+function closeEvidenceModal(e){
+  if(!e || e.target.id==="evidence-modal")document.getElementById("evidence-modal").classList.remove("open");
+}
+
+function toggleDemoMode(){
+  document.body.classList.toggle("demo-mode");
+  const on=document.body.classList.contains("demo-mode");
+  p3ShowToast(on?"Demo mode ON — hover cards to reveal the product feel.":"Demo mode OFF");
+}
+
+/* Patch the existing mission so Phase 3 tracks XP */
+const __startMissionOriginal = window.startMission;
+window.startMission = function(){
+  state.missionStarted=true; saveState();
+  if(typeof __startMissionOriginal==="function") __startMissionOriginal();
+  renderP3XP(); renderAchievements();
+  p3ShowToast("Mission started · +120 XP");
+};
+
+/* Re-wrap dashboard renderer once the original function exists */
+const __renderDashboardOriginal = window.renderDashboard;
+window.renderDashboard = function(){
+  __renderDashboardOriginal();
+  const trackId=state.matchedTrack||"data";
+  const pct=state.trackPct||{data:33,design:33,dev:34};
+  const levels=state.skillLevels||{};
+  buildEvidence(trackId,levels,pct);
+  buildCareerCompare(pct,trackId);
+  renderAchievements();
+  renderBuilder();
+  renderP3XP();
+};
+
+
+/* ---------- SHARE CARD ---------- */
+
+function downloadShareCard() {
+  const trackId = state.matchedTrack || "data";
+  const track = TRACKS[trackId];
+  const pct = state.trackPct || { data: 0, design: 0, dev: 0 };
+  const canvas = document.getElementById('share-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  ctx.fillStyle = "#FAF6EF";
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.fillStyle = "#20263B";
+  ctx.font = "600 26px Inter, sans-serif";
+  ctx.textAlign = "left";
+  ctx.fillText("Pathfinder result", 60, 80);
+
+  ctx.strokeStyle = "#DDD4C0";
+  ctx.beginPath(); ctx.moveTo(60, 104); ctx.lineTo(W-60, 104); ctx.stroke();
+
+  ctx.fillStyle = track.color;
+  ctx.font = "600 20px Inter, sans-serif";
+  ctx.fillText("MATCHED TRACK", 60, 150);
+  ctx.fillStyle = "#20263B";
+  ctx.font = "600 46px Georgia, serif";
+  ctx.fillText(track.title, 60, 205);
+  ctx.fillStyle = "#545B72";
+  ctx.font = "16px Inter, sans-serif";
+  wrapText(ctx, track.desc, 60, 240, W - 120, 24);
+
+  // fit bars
+  let y = 330;
+  ctx.fillStyle = "#20263B";
+  ctx.font = "600 16px Inter, sans-serif";
+  ctx.fillText("Fit across all three tracks", 60, y);
+  y += 30;
+  ["data","design","dev"].forEach(k => {
+    ctx.fillStyle = "#545B72";
+    ctx.font = "14px Inter, sans-serif";
+    ctx.fillText(TRACKS[k].title + "  " + pct[k] + "%", 60, y + 14);
+    ctx.fillStyle = "#EFE9DA";
+    ctx.fillRect(230, y, W - 290, 16);
+    ctx.fillStyle = TRACKS[k].color;
+    ctx.fillRect(230, y, (W - 290) * (pct[k]/100), 16);
+    y += 40;
+  });
+
+  // skill gap
+  y += 20;
+  ctx.fillStyle = "#20263B";
+  ctx.font = "600 16px Inter, sans-serif";
+  ctx.fillText("Skill levels vs. career-ready bar", 60, y);
+  y += 30;
+  const levels = state.skillLevels || {};
+  track.skills.forEach(s => {
+    const lvl = levels[s] || 1;
+    ctx.fillStyle = "#545B72";
+    ctx.font = "14px Inter, sans-serif";
+    ctx.fillText(s, 60, y + 14);
+    ctx.fillStyle = "#EFE9DA";
+    ctx.fillRect(300, y, W - 360, 16);
+    ctx.fillStyle = track.color;
+    ctx.fillRect(300, y, (W - 360) * (lvl/5), 16);
+    // target marker
+    ctx.strokeStyle = "#20263B";
+    ctx.lineWidth = 2;
+    const tx = 300 + (W - 360) * (TARGET_LEVEL/5);
+    ctx.beginPath(); ctx.moveTo(tx, y - 3); ctx.lineTo(tx, y + 19); ctx.stroke();
+    y += 40;
+  });
+
+  // checklist progress
+  y += 20;
+  const total = track.resources.length;
+  let done = 0;
+  for (let i = 0; i < total; i++) if (state.checked[trackId + "_" + i]) done++;
+  const donePct = Math.round((done/total)*100);
+  ctx.fillStyle = "#20263B";
+  ctx.font = "600 16px Inter, sans-serif";
+  ctx.fillText("Checklist progress: " + donePct + "%  (" + done + " of " + total + ")", 60, y);
+
+  ctx.fillStyle = "#8A8370";
+  ctx.font = "13px Inter, sans-serif";
+  ctx.fillText("Generated locally with Pathfinder", 60, H - 40);
+
+  const link = document.createElement('a');
+  link.download = "pathfinder-result.png";
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(' ');
+  let line = '';
+  let lines = 0;
+  for (let i = 0; i < words.length; i++) {
+    const test = line + words[i] + ' ';
+    if (ctx.measureText(test).width > maxWidth && line !== '') {
+      ctx.fillText(line, x, y + lines * lineHeight);
+      line = words[i] + ' ';
+      lines++;
+      if (lines >= 3) return;
+    } else { line = test; }
+  }
+  ctx.fillText(line, x, y + lines * lineHeight);
+}
+
+/* ---------- INIT ---------- */
+if (state.matchedTrack) { goTo("dashboard"); }
+</script>
+
+<script>
+/* ================= PHASE 7: HACKATHON DEMO + POLISH ================= */
+
+function p7Toast(message){
+  if(typeof p6Toast==="function") p6Toast(message);
+  else if(typeof p3ShowToast==="function") p3ShowToast(message);
+}
+
+function p7LoadDemo(){
+  state.matchedTrack="data";
+  state.trackPct={data:88,design:63,dev:72};
+  state.skillLevels={
+    "Python / SQL":4,"Statistics":3,"Data Visualization":4,"Excel":4,"Communication":3,
+    "Figma / Prototyping":2,"User Research":2,"Visual Design":2,"Wireframing":2,
+    "HTML & CSS":3,"JavaScript":3,"Git & Version Control":3,"Problem Solving":4,"Debugging":3
+  };
+  state.resumeProvided=true;
+  state.resumeText=`Aarav Mehta
+B.Tech Computer Science
+
+Data Analytics Intern — Insight Labs
+• Cleaned and analyzed customer and sales datasets using Python, pandas and SQL.
+• Built Power BI dashboards and Excel reports for weekly business reviews.
+• Presented findings to stakeholders and documented recommendations.
+
+Projects
+• E-commerce Intelligence Dashboard — analyzed 18,000 transactions and identified repeat-purchase patterns.
+• Customer Churn Analysis — used Python and visualization to compare retention across segments.
+
+Skills: Python, SQL, pandas, Excel, Power BI, data visualization, statistics, communication, Git.
+`;
+  state.missionStarted=true;
+  state.builder=state.builder||{};
+  state.p6=state.p6||{xp:0,level:1,missions:0,completed:{}};
+  state.p6.xp=Math.max(state.p6.xp||0,148);
+  state.p6.level=Math.max(state.p6.level||1,2);
+  saveState();
+  renderDashboard();
+  if(typeof renderP4ResumeIntelligence==="function") renderP4ResumeIntelligence();
+  if(typeof renderAchievements==="function") renderAchievements();
+  if(typeof renderP3XP==="function") renderP3XP();
+  document.getElementById("screen-dashboard")?.scrollIntoView({behavior:"smooth",block:"start"});
+  document.body.classList.add("demo-mode");
+  p7Toast("Showcase profile loaded · ready for your judge walkthrough.");
+}
+
+function p7Reset(){
+  const ok=confirm("Reset Pathfinder to a fresh profile? This clears the saved demo/progress on this browser.");
+  if(!ok) return;
+  localStorage.removeItem("pathfinder_state_v2");
+  localStorage.removeItem("pathfinder_demo_mode");
+  location.reload();
+}
+
+function p7TogglePresentation(){
+  document.body.classList.toggle("presentation-mode");
+  const on=document.body.classList.contains("presentation-mode");
+  document.body.classList.toggle("demo-mode",on);
+  p7Toast(on?"Presentation mode ON · focus on the product story.":"Presentation mode OFF");
+}
+
+function p7ScrollSpy(){
+  const map=[
+    ["roadmap","Roadmap"],["projects","Projects"],["skills","Skill gaps"],["missions","Missions"],
+    ["resume-intelligence","Resume AI"],["opportunities","Opportunities"],["evidence","Evidence"],["achievements","Achievements"]
+  ];
+  const buttons=[...document.querySelectorAll(".os-nav button")];
+  const y=window.scrollY+170;
+  let active=null;
+  for(const [id,label] of map){
+    const el=document.getElementById(id);
+    if(el && el.getBoundingClientRect().top+window.scrollY<=y) active={id,label};
+  }
+  buttons.forEach(b=>{
+    const text=b.textContent.trim().replace(/^.*?\s/,"");
+    const match=active && (b.textContent.includes(active.label));
+    b.classList.toggle("active",!!match);
+  });
+}
+
+(function p7Init(){
+  const topbar=document.querySelector(".os-topbar");
+  if(topbar && !topbar.dataset.p7Ready) topbar.dataset.p7Ready="1";
+  window.addEventListener("scroll",()=>{
+    p7ScrollSpy();
+    document.getElementById("p7-backtop")?.classList.toggle("show",window.scrollY>500);
+  },{passive:true});
+  setTimeout(p7ScrollSpy,200);
+})();
+</script>
+
+
+
+<div class="p3-toast" id="p3-toast"></div>
+
+<div class="p3-modal" id="evidence-modal" onclick="closeEvidenceModal(event)">
+  <div class="p3-modal-card">
+    <div class="p3-modal-head">
+      <div><div class="os-kicker">Explainable scoring</div><h2>How Pathfinder scores you</h2></div>
+      <button class="p3-close" onclick="closeEvidenceModal()">×</button>
+    </div>
+    <div class="p3-modal-section">
+      <h4>01 — Career fit</h4>
+      <p>Fit combines your questionnaire signals across every available track. The winner is the track with the strongest weighted preference signal.</p>
+    </div>
+    <div class="p3-modal-section">
+      <h4>02 — Readiness</h4>
+      <p>Readiness is based on the skills Pathfinder can find in your pasted experience. Missing evidence is treated conservatively instead of assuming you know a skill.</p>
+    </div>
+    <div class="p3-modal-section">
+      <h4>03 — Confidence</h4>
+      <p>Confidence rises when your career preference and skill evidence point in the same direction. This makes the recommendation easier to explain to judges and users.</p>
+    </div>
+  </div>
+</div>
+
+
+<div class="p7-demo-banner" id="p7-demo-banner">
+  <div><strong>Presentation mode</strong> <span>— Pathfinder is ready for the judge walkthrough.</span></div>
+  <button class="os-control" onclick="p7TogglePresentation()">Exit</button>
+</div>
+<button class="p7-backtop" id="p7-backtop" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+
+<div class="p8-modal" id="p8-judge-modal" role="dialog" aria-modal="true" aria-labelledby="p8-title">
+  <div class="p8-dialog">
+    <div style="display:flex;justify-content:space-between;gap:15px;align-items:flex-start">
+      <div>
+        <div class="eyebrow">HACKATHON MODE</div>
+        <h2 id="p8-title">90-second judge walkthrough</h2>
+      </div>
+      <button class="p8-btn" onclick="p8CloseJudge()">✕ Close</button>
+    </div>
+    <p>Use this sequence to tell one clear story instead of clicking randomly through the product.</p>
+
+    <div class="p8-steps">
+      <div class="p8-step">
+        <div class="p8-step-num">1</div>
+        <div><strong>Show the Career Twin</strong><span>Start with the candidate's best-fit career, fit score and readiness.</span></div>
+        <button class="p8-btn" onclick="p8Jump('overview')">Open</button>
+      </div>
+      <div class="p8-step">
+        <div class="p8-step-num">2</div>
+        <div><strong>Explain the biggest gap</strong><span>Show the skill evidence and explain why the recommendation is transparent.</span></div>
+        <button class="p8-btn" onclick="p8Jump('evidence')">Open</button>
+      </div>
+      <div class="p8-step">
+        <div class="p8-step-num">3</div>
+        <div><strong>Show the roadmap</strong><span>Move from diagnosis to a practical sequence of learning and proof.</span></div>
+        <button class="p8-btn" onclick="p8Jump('roadmap')">Open</button>
+      </div>
+      <div class="p8-step">
+        <div class="p8-step-num">4</div>
+        <div><strong>Show opportunities</strong><span>Demonstrate how the same evidence translates into realistic target roles.</span></div>
+        <button class="p8-btn" onclick="p8Jump('opportunities')">Open</button>
+      </div>
+      <div class="p8-step">
+        <div class="p8-step-num">5</div>
+        <div><strong>Finish with the mission</strong><span>End with one action the candidate can complete today and turn into proof.</span></div>
+        <button class="p8-btn" onclick="p8Jump('missions')">Open</button>
+      </div>
+    </div>
+
+    <div class="p8-judge-note"><strong>Judge line:</strong> “Pathfinder doesn't just recommend a career. It turns evidence about where someone is today into the next measurable action that moves them toward that career.”</div>
+    <div class="p8-trust">Demo data is synthetic and stored locally in the browser. Scores are guidance signals, not guarantees of hiring.</div>
+
+    <div class="p8-footer">
+      <button class="p8-btn" onclick="p8CloseJudge()">Close</button>
+      <button class="p8-btn dark" onclick="p8LoadShowcase();p8CloseJudge()">Load showcase + start</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+/* ================= PHASE 8: FINAL DEMO / JUDGE SYSTEM ================= */
+
+function p8Toast(msg){
+  if(typeof p6Toast==="function") p6Toast(msg);
+  else if(typeof p3ShowToast==="function") p3ShowToast(msg);
+  else alert(msg);
+}
+
+function p8OpenJudge(){
+  document.getElementById("p8-judge-modal")?.classList.add("open");
+}
+function p8CloseJudge(){
+  document.getElementById("p8-judge-modal")?.classList.remove("open");
+}
+function p8Jump(id){
+  p8CloseJudge();
+  setTimeout(()=>{
+    const el=document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
+  },80);
+}
+function p8LoadShowcase(){
+  /* Reuse the tested Phase 7 showcase generator when available. */
+  if(typeof p7LoadDemo==="function"){
+    p7LoadDemo();
+    document.body.classList.add("demo-mode");
+    p8Toast("Showcase profile loaded. Your 90-second demo is ready.");
+    return;
+  }
+  if(typeof toggleDemoMode==="function"){
+    toggleDemoMode();
+    p8Toast("Demo profile enabled.");
+  }
+}
+function p8TogglePresentation(){
+  document.body.classList.toggle("presentation-mode");
+  const on=document.body.classList.contains("presentation-mode");
+  document.body.classList.toggle("demo-mode",on);
+  p8Toast(on ? "Presentation mode ON" : "Presentation mode OFF");
+}
+function p8Reset(){
+  if(!confirm("Reset Pathfinder to a fresh browser profile?")) return;
+  localStorage.removeItem("pathfinder_state_v2");
+  localStorage.removeItem("pathfinder_demo_mode");
+  location.reload();
+}
+
+/* Escape closes judge modal. */
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape") p8CloseJudge();
+});
+
+/* Keep presentation controls usable if the viewport is resized. */
+window.addEventListener("resize",()=>{
+  if(window.innerWidth<900) document.body.classList.remove("presentation-mode");
+});
+
+/* A tiny first-load cue, without interrupting the user. */
+setTimeout(()=>{
+  const dashboard=document.getElementById("screen-dashboard");
+  if(dashboard?.classList.contains("active")) {
+    const hint=localStorage.getItem("pathfinder_phase8_hint_seen");
+    if(!hint){
+      localStorage.setItem("pathfinder_phase8_hint_seen","1");
+      p8Toast("Tip: use “Judge walkthrough” for your final presentation.");
+    }
+  }
+},700);
+</script>
+
+</body>
+</html>

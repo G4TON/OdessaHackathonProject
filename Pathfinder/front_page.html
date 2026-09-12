@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pathway AI — One place to learn, grow & build</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07111f;--panel:#0d1b2d;--panel2:#10243a;--text:#f5f8ff;--muted:#a8b6ca;--cyan:#59d9ff;--violet:#9b7cff;--green:#64e6b1;--line:rgba(255,255,255,.1)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 15% 15%,rgba(89,217,255,.13),transparent 28%),radial-gradient(circle at 85% 25%,rgba(155,124,255,.16),transparent 30%),var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:60px 60px;mask-image:linear-gradient(to bottom,black,transparent 80%)}
+nav{height:76px;display:flex;align-items:center;justify-content:space-between;max-width:1180px;margin:auto;padding:0 24px;position:relative;z-index:5}
+.logo{display:flex;align-items:center;gap:11px;font:700 20px "Space Grotesk"} .mark{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:grid;place-items:center;color:#06101d;font-weight:800;box-shadow:0 0 30px rgba(89,217,255,.2)}
+nav a{color:var(--muted);text-decoration:none;margin-left:28px;font-size:14px}nav a:hover{color:white}
+.hero{max-width:1180px;margin:auto;padding:82px 24px 70px;display:grid;grid-template-columns:1.1fr .9fr;gap:70px;align-items:center;min-height:650px}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;padding:8px 13px;border:1px solid rgba(89,217,255,.25);background:rgba(89,217,255,.07);border-radius:999px;color:#bcefff;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+h1{font:700 clamp(48px,6.5vw,78px)/.98 "Space Grotesk";letter-spacing:-.055em;margin:23px 0}.gradient{background:linear-gradient(100deg,#fff 15%,var(--cyan) 53%,#b89fff 92%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{font-size:18px;line-height:1.7;color:var(--muted);max-width:640px}.actions{display:flex;gap:13px;flex-wrap:wrap;margin-top:32px}
+.btn{border:0;border-radius:13px;padding:15px 20px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:9px;cursor:pointer;transition:.2s}.primary{background:linear-gradient(100deg,var(--cyan),#8fc9ff);color:#06101d}.secondary{background:rgba(255,255,255,.06);border:1px solid var(--line);color:white}.btn:hover{transform:translateY(-2px);box-shadow:0 14px 35px rgba(0,0,0,.25)}
+.hero-card{position:relative}.orbit{position:absolute;inset:-40px;border:1px solid rgba(255,255,255,.06);border-radius:50%;transform:rotate(-18deg)}.dashboard{position:relative;border:1px solid var(--line);background:linear-gradient(145deg,rgba(18,39,62,.94),rgba(8,19,33,.96));border-radius:24px;padding:22px;box-shadow:0 30px 100px rgba(0,0,0,.35);backdrop-filter:blur(14px)}
+.topline{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}.live{color:var(--green)}.score{font:700 58px "Space Grotesk";margin:25px 0 3px}.bar{height:8px;background:#1b2b40;border-radius:99px;overflow:hidden}.bar i{display:block;width:78%;height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet));border-radius:99px}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.mini div{padding:15px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.035)}.mini b{display:block;font-size:18px}.mini span{color:var(--muted);font-size:11px}
+.section{max-width:1180px;margin:auto;padding:85px 24px}.section-head{text-align:center;max-width:700px;margin:0 auto 40px}.section h2{font:700 38px "Space Grotesk";margin:0 0 12px}.section p{color:var(--muted);line-height:1.65}
+.products{display:grid;grid-template-columns:1fr 1fr;gap:20px}.product{padding:32px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.025));border-radius:22px;position:relative;overflow:hidden}.product:after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-80px;top:-80px;background:rgba(89,217,255,.1);filter:blur(10px)}
+.icon{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:24px;background:rgba(89,217,255,.1);border:1px solid rgba(89,217,255,.18)}.product h3{font:700 27px "Space Grotesk";margin:22px 0 10px}.tag{color:var(--cyan);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em}.product ul{padding:0;list-style:none;color:var(--muted);line-height:2;margin:22px 0}.product li:before{content:"✓";color:var(--green);margin-right:9px;font-weight:bold}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.step{padding:22px;border-top:2px solid var(--cyan);background:rgba(255,255,255,.035);border-radius:14px}.num{color:var(--cyan);font:700 14px "Space Grotesk"}.step h4{margin:12px 0 7px;font-size:17px}.step p{font-size:13px;margin:0}
+.cta{max-width:1180px;margin:10px auto 80px;padding:55px 30px;text-align:center;border:1px solid rgba(89,217,255,.2);border-radius:26px;background:radial-gradient(circle at 50% 0,rgba(89,217,255,.12),transparent 55%),rgba(255,255,255,.035)}.cta h2{font:700 40px "Space Grotesk";margin:0 0 12px}
+footer{border-top:1px solid var(--line);padding:25px 24px;color:#728199;text-align:center;font-size:12px}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:55px;gap:35px}.products{grid-template-columns:1fr}.flow{grid-template-columns:1fr 1fr}nav .links{display:none}h1{font-size:52px}}
+@media(max-width:500px){.flow{grid-template-columns:1fr}.hero{padding-bottom:35px}.section{padding:60px 18px}.cta{margin:0 18px 60px}.actions .btn{width:100%;justify-content:center}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo"><div class="mark">✦</div> Pathway AI</div>
+  <div class="links"><a href="#platform">Platform</a><a href="#workflow">How it works</a><a href="#launch">Launch</a></div>
+</nav>
+
+<main>
+<section class="hero">
+  <div>
+    <span class="eyebrow">⚡ Hackathon-ready career + learning platform</span>
+    <h1>Turn potential into a <span class="gradient">clear path.</span></h1>
+    <p class="lede">One intelligent platform that understands where you are, shows where you can go, and gives you the next action to get there.</p>
+    <div class="actions">
+      <!-- Change these two hrefs if your apps use different URLs/ports. -->
+      <a class="btn primary" href="http://localhost:3000">Explore Pathfinder →</a>
+      <a class="btn secondary" href="http://localhost:5173/">Open LearnLoop ↗</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="orbit"></div>
+    <div class="dashboard">
+      <div class="topline"><span>PATHWAY INTELLIGENCE</span><span class="live">● LIVE PROFILE</span></div>
+      <div class="score">78%</div>
+      <div style="color:#a8b6ca;font-size:13px;margin-bottom:13px">Career readiness</div>
+      <div class="bar"><i></i></div>
+      <div class="mini">
+        <div><b>Career Twin</b><span>Explainable match</span></div>
+        <div><b>Daily Mission</b><span>One next action</span></div>
+        <div><b>Portfolio</b><span>Proof, not promises</span></div>
+        <div><b>Study Plan</b><span>Focused sprints</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="platform">
+  <div class="section-head"><h2>Two powerful experiences. One journey.</h2><p>We designed the front door around the real problem: students don't need more disconnected tools. They need a system that connects self-discovery, learning and proof of progress.</p></div>
+  <div class="products">
+    <article class="product">
+      <div class="icon">🧭</div><div class="tag">Career intelligence</div><h3>Pathfinder</h3>
+      <p>Discover your strongest direction and turn it into an evidence-backed career roadmap.</p>
+      <ul><li>Career Twin matching</li><li>Skill-gap analysis</li><li>Resume intelligence</li><li>Projects & portfolio proof</li><li>XP, missions & achievements</li></ul>
+      <a class="btn primary" href="index.html">Enter Pathfinder →</a>
+    </article>
+    <article class="product">
+      <div class="icon">🧠</div><div class="tag">Learning intelligence</div><h3>LearnLoop AI</h3>
+      <p>Transform dense study material into focused learning sprints and active-recall checkpoints.</p>
+      <ul><li>Material analysis</li><li>Pomodoro roadmap</li><li>Feynman recall</li><li>Concept overview</li><li>Progress-focused study flow</li></ul>
+      <a class="btn secondary" href="http://localhost:5173/" target="_blank" rel="noopener">Enter LearnLoop ↗</a>
+    </article>
+  </div>
+</section>
+
+<section class="section" id="workflow">
+  <div class="section-head"><h2>From uncertainty to momentum.</h2><p>A simple product story judges can understand in seconds.</p></div>
+  <div class="flow">
+    <div class="step"><span class="num">01 / DISCOVER</span><h4>Understand yourself</h4><p>Interests, skills and experience become structured signals.</p></div>
+    <div class="step"><span class="num">02 / MATCH</span><h4>Find your direction</h4><p>An explainable Career Twin turns signals into a clear path.</p></div>
+    <div class="step"><span class="num">03 / LEARN</span><h4>Close the gaps</h4><p>LearnLoop converts material into focused, recall-driven work.</p></div>
+    <div class="step"><span class="num">04 / PROVE</span><h4>Build evidence</h4><p>Missions and projects turn learning into portfolio-ready proof.</p></div>
+  </div>
+</section>
+
+<section class="cta" id="launch">
+  <h2>Your next step starts here.</h2>
+  <p style="max-width:600px;margin:0 auto 25px">Choose your starting point. The platform takes care of the rest.</p>
+  <div class="actions" style="justify-content:center">
+    <a class="btn primary" href="index.html">Start with Pathfinder →</a>
+    <a class="btn secondary" href="http://localhost:8501" target="_blank" rel="noopener">Start studying ↗</a>
+  </div>
+</section>
+</main>
+
+<footer>Pathway AI · Learn smarter. Find direction. Build proof. · Hackathon Prototype</footer>
+</body>
+</html>

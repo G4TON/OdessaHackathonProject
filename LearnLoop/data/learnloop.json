@@ -1,0 +1,1370 @@
+{
+  "active_document_id": "doc-1789172587651",
+  "documents": [
+    {
+      "id": "doc-demo-ds",
+      "title": "Introduction to Data Structures",
+      "description": "Foundational computer science data structures: Arrays, Linked Lists, Stacks, Queues, and Binary Search Trees.",
+      "raw_text_preview": "A data structure is a specialized format for organizing, processing, retrieving, and storing data...",
+      "total_characters": 5400,
+      "created_at": "2026-09-11T19:00:50.035Z"
+    },
+    {
+      "id": "doc-1789156456541",
+      "title": "Module I PS&PT",
+      "description": "Structured curriculum with 6 learning modules extracted from uploaded material.",
+      "raw_text_preview": "PROBLEM SOLVING AND \nPROGRAMMING TECHNIQUES\nNeethuSubash\n9744465875\nAssistantProfessor\nDepartmentofComputerScience&Engineering\nMarAthanasiusCollegeofEngineering\n\nCOURSE OUTCOME\n\n\n\nSYLLABUS\nIProblemsolving:ProblemsolvingusingAlgorithms,PseudocodeandFlowcharts.\nCfundamentals:Characterset,Constants,Ide...",
+      "total_characters": 31165,
+      "created_at": "2026-09-11T19:54:16.541Z"
+    },
+    {
+      "id": "doc-1789159194603",
+      "title": "Module I PS&PT",
+      "description": "Structured curriculum with 6 learning modules extracted from Module I PS&PT.",
+      "raw_text_preview": "PROBLEM SOLVING AND \nPROGRAMMING TECHNIQUES\nNeethuSubash\n9744465875\nAssistantProfessor\nDepartmentofComputerScience&Engineering\nMarAthanasiusCollegeofEngineering\n\nCOURSE OUTCOME\n\n\n\nSYLLABUS\nIProblemsolving:ProblemsolvingusingAlgorithms,PseudocodeandFlowcharts.\nCfundamentals:Characterset,Constants,Ide...",
+      "total_characters": 31165,
+      "created_at": "2026-09-11T20:39:54.603Z"
+    },
+    {
+      "id": "doc-1789159297620",
+      "title": "How Linux Works: Architecture, Shell Fundamentals, and System Mechanics",
+      "description": "A comprehensive conceptual introduction to Linux system architecture, kernel responsibilities, shell environments, and core administrative commands.",
+      "raw_text_preview": "3 R D E D I T I O N\nH O W\nL I N U X\nW O R K S\nW H A T E V E R Y S U P E R U S E R S H O U L D K N O W\nB R I A N W A R D\nREVIEWS FOR\nHOW LINUX WORKS\n“If you are interested in Linux, How Linux Works: What Every\nSuperuser Should\nKnow is a must-read title.”\n— LinuxInsider\n“Lots to offer on almost every ...",
+      "total_characters": 1026473,
+      "created_at": "2026-09-11T20:41:37.620Z"
+    },
+    {
+      "id": "doc-1789159365962",
+      "title": "Problem Solving and C Programming Fundamentals",
+      "description": "A comprehensive introductory path covering algorithmic problem solving, the C compilation pipeline, lexical tokens, constants, and fundamental data types.",
+      "raw_text_preview": "PROBLEM SOLVING AND \nPROGRAMMING TECHNIQUES\nNeethuSubash\n9744465875\nAssistantProfessor\nDepartmentofComputerScience&Engineering\nMarAthanasiusCollegeofEngineering\n\nCOURSE OUTCOME\n\n\n\nSYLLABUS\nIProblemsolving:ProblemsolvingusingAlgorithms,PseudocodeandFlowcharts.\nCfundamentals:Characterset,Constants,Ide...",
+      "total_characters": 31165,
+      "created_at": "2026-09-11T20:42:45.962Z"
+    },
+    {
+      "id": "doc-1789171018968",
+      "title": "Problem Solving and C Programming Fundamentals",
+      "description": "A foundational curriculum covering computational problem-solving methodologies, algorithm design, the C compilation pipeline, lexical tokens, and fundamental data types.",
+      "raw_text_preview": "PROBLEM SOLVING AND \nPROGRAMMING TECHNIQUES\nNeethuSubash\n9744465875\nAssistantProfessor\nDepartmentofComputerScience&Engineering\nMarAthanasiusCollegeofEngineering\n\nCOURSE OUTCOME\n\n\n\nSYLLABUS\nIProblemsolving:ProblemsolvingusingAlgorithms,PseudocodeandFlowcharts.\nCfundamentals:Characterset,Constants,Ide...",
+      "total_characters": 31165,
+      "created_at": "2026-09-11T23:56:58.968Z"
+    },
+    {
+      "id": "doc-1789172587651",
+      "title": "Module I PS&PT",
+      "description": "Structured curriculum with 6 learning modules extracted from Module I PS&PT.",
+      "raw_text_preview": "PROBLEM SOLVING AND \nPROGRAMMING TECHNIQUES\nNeethuSubash\n9744465875\nAssistantProfessor\nDepartmentofComputerScience&Engineering\nMarAthanasiusCollegeofEngineering\n\nCOURSE OUTCOME\n\n\n\nSYLLABUS\nIProblemsolving:ProblemsolvingusingAlgorithms,PseudocodeandFlowcharts.\nCfundamentals:Characterset,Constants,Ide...",
+      "total_characters": 31165,
+      "created_at": "2026-09-12T00:23:07.651Z"
+    }
+  ],
+  "topics": [
+    {
+      "id": "topic-arrays",
+      "document_id": "doc-demo-ds",
+      "title": "Arrays & Contiguous Memory",
+      "description": "Sequential contiguous memory blocks providing O(1) random access by index.",
+      "difficulty": "beginner",
+      "estimated_minutes": 25,
+      "order_index": 0,
+      "prerequisites": [],
+      "status": "available",
+      "source_chunk": "An array is a collection of elements identified by index or key, stored in contiguous memory locations. Because memory addresses are contiguous, accessing any element given its index takes O(1) constant time: Address = BaseAddress + (Index * ElementSize). However, static arrays have a fixed capacity allocated upfront. Inserting or deleting elements at arbitrary positions requires shifting subsequent elements, incurring an O(n) linear time penalty. Dynamic arrays mitigate fixed capacity by allocating a new larger buffer (typically 2x) and copying elements over when full, achieving amortized O(1) insertions."
+    },
+    {
+      "id": "topic-linked-lists",
+      "document_id": "doc-demo-ds",
+      "title": "Linked Lists & Node Pointers",
+      "description": "Linear data structure where elements (nodes) hold a value and a reference pointer to the next node.",
+      "difficulty": "beginner",
+      "estimated_minutes": 25,
+      "order_index": 1,
+      "prerequisites": [
+        "topic-arrays"
+      ],
+      "status": "locked",
+      "source_chunk": "A linked list is a linear collection of data elements whose order is not given by their physical placement in memory. Instead, each element is represented as a 'Node' containing two primary components: the data payload, and a pointer (or reference) to the next node in sequence. In a singly linked list, traversal begins at the Head pointer and follows next pointers until reaching null, requiring O(n) time. Unlike arrays, nodes can be allocated anywhere in heap memory without requiring contiguous space. Inserting or deleting an element given a reference to the preceding node takes O(1) time simply by reassigning pointer references, but random access is not supported because jumping directly to the k-th index requires sequential traversal from the head."
+    },
+    {
+      "id": "topic-stacks",
+      "document_id": "doc-demo-ds",
+      "title": "Stacks & LIFO Architecture",
+      "description": "Abstract data type adhering to the Last-In, First-Out (LIFO) order with push and pop operations.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 20,
+      "order_index": 2,
+      "prerequisites": [
+        "topic-linked-lists"
+      ],
+      "status": "locked",
+      "source_chunk": "A stack is a linear data structure that follows the Last-In, First-Out (LIFO) principle: the last element added is the first one to be removed. Key operations include 'push' (add item to top), 'pop' (remove and return item from top), and 'peek' (inspect top item without removal). All three primary operations run in O(1) constant time. Stacks can be implemented using either dynamic arrays or linked lists. Stacks are fundamental in computer science: execution call stacks manage function invocations and local variables in runtime environments, syntax parsers validate matching parentheses, and web browsers use stacks to manage forward/back page navigation and undo histories."
+    },
+    {
+      "id": "topic-queues",
+      "document_id": "doc-demo-ds",
+      "title": "Queues & FIFO Scheduling",
+      "description": "First-In, First-Out (FIFO) sequential structure with enqueue at rear and dequeue at front.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 20,
+      "order_index": 3,
+      "prerequisites": [
+        "topic-stacks"
+      ],
+      "status": "locked",
+      "source_chunk": "A queue is an abstract data structure that operates under the First-In, First-Out (FIFO) discipline: the first element inserted is the first element extracted. Elements enter the queue at the 'rear' via an 'enqueue' operation and exit at the 'front' via a 'dequeue' operation. Both enqueue and dequeue take O(1) time when implemented with a linked list with head and tail pointers, or with a circular array buffer. Queues model real-world waiting lines and are ubiquitous in asynchronous processing: print job queues, operating system task scheduling, message brokers (like RabbitMQ/Kafka), and graph traversal algorithms like Breadth-First Search (BFS)."
+    },
+    {
+      "id": "topic-trees",
+      "document_id": "doc-demo-ds",
+      "title": "Trees & Binary Search Trees",
+      "description": "Hierarchical non-linear structure with a root, parent-child nodes, and sorted subtrees.",
+      "difficulty": "advanced",
+      "estimated_minutes": 30,
+      "order_index": 4,
+      "prerequisites": [
+        "topic-queues"
+      ],
+      "status": "locked",
+      "source_chunk": "A tree is a non-linear hierarchical data structure consisting of nodes connected by directed edges. The topmost node is called the Root. Nodes with no children are known as Leaves. A Binary Tree restricts each node to having at most two children: left and right. A Binary Search Tree (BST) enforces the binary search invariant: for every node N, all values in its left subtree are strictly less than N's value, and all values in its right subtree are strictly greater than N's value. Under balanced conditions (like AVL or Red-Black trees), searching, insertion, and deletion run in O(log n) time. Tree traversals visit nodes in specified sequences: In-order traversal (Left, Root, Right) produces sorted order in a BST; Pre-order (Root, Left, Right) is useful for cloning or serialization; Post-order (Left, Right, Root) is used for bottom-up deletions and dependency evaluations."
+    },
+    {
+      "id": "topic-doc-1789156456541-1",
+      "document_id": "doc-1789156456541",
+      "title": "PROBLEM SOLVING AND",
+      "description": "PROBLEM SOLVING AND \nPROGRAMMING TECHNIQUES\nNeethuSubash\n9744465875\nAssistantProfessor\nDepartmentofComputerScience&Engineering\nMarAthanasius...",
+      "difficulty": "beginner",
+      "estimated_minutes": 20,
+      "order_index": 0,
+      "prerequisites": [],
+      "status": "available",
+      "source_chunk": "PROBLEM SOLVING AND \nPROGRAMMING TECHNIQUES\nNeethuSubash\n9744465875\nAssistantProfessor\nDepartmentofComputerScience&Engineering\nMarAthanasiusCollegeofEngineering"
+    },
+    {
+      "id": "topic-doc-1789156456541-2",
+      "document_id": "doc-1789156456541",
+      "title": "SYLLABUS",
+      "description": "SYLLABUS\nIProblemsolving:ProblemsolvingusingAlgorithms,PseudocodeandFlowcharts.\nCfundamentals:Characterset,Constants,Identifiers,Keywords,Ba...",
+      "difficulty": "intermediate",
+      "estimated_minutes": 25,
+      "order_index": 1,
+      "prerequisites": [
+        "topic-doc-1789156456541-1"
+      ],
+      "status": "locked",
+      "source_chunk": "SYLLABUS\nIProblemsolving:ProblemsolvingusingAlgorithms,PseudocodeandFlowcharts.\nCfundamentals:Characterset,Constants,Identifiers,Keywords,Basicdatatypes,Variables,Operatorsandits\nprecedence,Bitwiseoperators,Expressions,Statements,InputandOutputstatements–StructureofaCprogram–\nsimpleprograms.\nIIControlstatements:If,if-else,nestedif,switch,while,dowhile,for,breakcontinue,nestedloops.Single\ndimensionalarrays–defininganarray,arrayinitialization,accessingarrayelements,Enumerateddatatype,Two\ndimensionalarrays–definingatwodimensionalarray–Programsformatrixprocessing.ProgramsforSequential\nsearch,Bubblesort.\nIIIStrings:Declaringastringvariable,readinganddisplayingstrings,stringrelatedlibraryfunctions–Programsfor\nstringmatching.Functions:Functiondefinition,functioncall,functionprototype,parameterpassing–Recursion–\nPassingarraytofunction.Macros:Definingandcallingmacros.\nIVStructures:Definingastructurevariable,accessingmembers,arrayofstructures,passingstructuretofunction.\nUnion,Pointers:declaration,operationsonpointers,passingpointertoafunction,accessingarrayelementsusing\npointers,processingstringsusingpointers,pointertopointer,arrayofpointers,pointertofunction,pointerto\nstructure,Dynamicmemoryallocation.\nVFiles:DifferenttypesoffilesinC–OpeningClosingafile–WritingtoandReadingfromafile–Processingfiles–\nLibraryfunctionsrelatedtofile–fseek(),ftell(),fread(),fwrite().StorageClassassociatedwithvariables:\nautomatic,static,externalandregister."
+    },
+    {
+      "id": "topic-doc-1789156456541-3",
+      "document_id": "doc-1789156456541",
+      "title": "Text Books",
+      "description": "Text Books \n1.Programming with C ByronS. Gottfried, TataMcGrawHill\n2.Computer Programming in C KerninghanRitchie, PHI \nReference Books \n1.Pr...",
+      "difficulty": "intermediate",
+      "estimated_minutes": 30,
+      "order_index": 2,
+      "prerequisites": [
+        "topic-doc-1789156456541-2"
+      ],
+      "status": "locked",
+      "source_chunk": "Text Books \n1.Programming with C ByronS. Gottfried, TataMcGrawHill\n2.Computer Programming in C KerninghanRitchie, PHI \nReference Books \n1.Programming in CStephenC. Kochan, CBS publishers. \n2.Programming in C–E. Balaguruswamy, McGrawHill. \n3.Let us C–Yashwant Kanetkar, BPB.\n4.A Book on C–Al KelleyandIraPohl, AddisonWesley. \n5.Mastering Turbo CStanKelly Bootle, BPB Publications. \n6.Pointers in CYashwantKanetkar, BPB. \n7.The Spirit of CbyMunishcooper, JaicoBooks."
+    },
+    {
+      "id": "topic-doc-1789156456541-4",
+      "document_id": "doc-1789156456541",
+      "title": "MODULEI",
+      "description": "MODULEI\n◦Problemsolving:ProblemsolvingusingAlgorithms,Pseudocodeand\nFlowcharts.\n◦Cfundamentals:Characterset,Constants,Identifiers,Keywords,B...",
+      "difficulty": "advanced",
+      "estimated_minutes": 20,
+      "order_index": 3,
+      "prerequisites": [
+        "topic-doc-1789156456541-3"
+      ],
+      "status": "locked",
+      "source_chunk": "MODULEI\n◦Problemsolving:ProblemsolvingusingAlgorithms,Pseudocodeand\nFlowcharts.\n◦Cfundamentals:Characterset,Constants,Identifiers,Keywords,Basic\ndatatypes,Variables,Operatorsanditsprecedence,Bitwiseoperators,\nExpressions,Statements,InputandOutputstatements–StructureofaC\nprogram–simpleprograms."
+    },
+    {
+      "id": "topic-doc-1789156456541-5",
+      "document_id": "doc-1789156456541",
+      "title": "Problem solving",
+      "description": "Problem solving\n◦Fundamental skill in programming\n◦Importance of understanding the problem\n◦Breaking it down into manageable parts\n◦First st...",
+      "difficulty": "advanced",
+      "estimated_minutes": 25,
+      "order_index": 4,
+      "prerequisites": [
+        "topic-doc-1789156456541-4"
+      ],
+      "status": "locked",
+      "source_chunk": "Problem solving\n◦Fundamental skill in programming\n◦Importance of understanding the problem\n◦Breaking it down into manageable parts\n◦First step in problemsolving→thorough understandingof the problem\n◦Secondstep →break it downinto smaller, more manageable parts\nI.Decomposition\nII.Algorithm Design\nIII.Pseudocode and Flowcharts"
+    },
+    {
+      "id": "topic-doc-1789156456541-6",
+      "document_id": "doc-1789156456541",
+      "title": "ALGORITHM",
+      "description": "ALGORITHM\n◦Describes the sequence of actions leading to the solution of the given problem\n◦Algorithms typically follow a logical structure:\n...",
+      "difficulty": "advanced",
+      "estimated_minutes": 30,
+      "order_index": 5,
+      "prerequisites": [
+        "topic-doc-1789156456541-5"
+      ],
+      "status": "locked",
+      "source_chunk": "ALGORITHM\n◦Describes the sequence of actions leading to the solution of the given problem\n◦Algorithms typically follow a logical structure:\n•Input:The algorithm receives input data.\n•Processing:The algorithm performs a series of operations on the input \ndata.\n•Output:The algorithm produces the desired output."
+    },
+    {
+      "id": "topic-doc-1789159194603-1",
+      "document_id": "doc-1789159194603",
+      "title": "PROBLEM SOLVING AND",
+      "description": "PROBLEM SOLVING AND \nPROGRAMMING TECHNIQUES\nNeethuSubash\n9744465875\nAssistantProfessor\nDepartmentofComputerScience&Engineering\nMarAthanasiusCollegeofEngineering.",
+      "difficulty": "beginner",
+      "estimated_minutes": 20,
+      "order_index": 0,
+      "prerequisites": [],
+      "status": "needs_review",
+      "source_chunk": "PROBLEM SOLVING AND \nPROGRAMMING TECHNIQUES\nNeethuSubash\n9744465875\nAssistantProfessor\nDepartmentofComputerScience&Engineering\nMarAthanasiusCollegeofEngineering"
+    },
+    {
+      "id": "topic-doc-1789159194603-2",
+      "document_id": "doc-1789159194603",
+      "title": "SYLLABUS",
+      "description": "SYLLABUS\nIProblemsolving:ProblemsolvingusingAlgorithms,PseudocodeandFlowcharts.\nCfundamentals:Characterset,Constants,Identifiers,Keywords,Basicdatatypes,Variables,Operatorsandits\np",
+      "difficulty": "intermediate",
+      "estimated_minutes": 25,
+      "order_index": 1,
+      "prerequisites": [
+        "topic-doc-1789159194603-1"
+      ],
+      "status": "locked",
+      "source_chunk": "SYLLABUS\nIProblemsolving:ProblemsolvingusingAlgorithms,PseudocodeandFlowcharts.\nCfundamentals:Characterset,Constants,Identifiers,Keywords,Basicdatatypes,Variables,Operatorsandits\nprecedence,Bitwiseoperators,Expressions,Statements,InputandOutputstatements–StructureofaCprogram–\nsimpleprograms.\nIIControlstatements:If,if-else,nestedif,switch,while,dowhile,for,breakcontinue,nestedloops.Single\ndimensionalarrays–defininganarray,arrayinitialization,accessingarrayelements,Enumerateddatatype,Two\ndimensionalarrays–definingatwodimensionalarray–Programsformatrixprocessing.ProgramsforSequential\nsearch,Bubblesort.\nIIIStrings:Declaringastringvariable,readinganddisplayingstrings,stringrelatedlibraryfunctions–Programsfor\nstringmatching.Functions:Functiondefinition,functioncall,functionprototype,parameterpassing–Recursion–\nPassingarraytofunction.Macros:Definingandcallingmacros.\nIVStructures:Definingastructurevariable,accessingmembers,arrayofstructures,passingstructuretofunction.\nUnion,Pointers:declaration,operationsonpointers,passingpointertoafunction,accessingarrayelementsusing\npointers,processingstringsusingpointers,pointertopointer,arrayofpointers,pointertofunction,pointerto\nstructure,Dynamicmemoryallocation.\nVFiles:DifferenttypesoffilesinC–OpeningClosingafile–WritingtoandReadingfromafile–Processingfiles–\nLibraryfunctionsrelatedtofile–fseek(),ftell(),fread(),fwrite().StorageClassassociatedwithvariables:\nautomatic,static,externalandregister."
+    },
+    {
+      "id": "topic-doc-1789159194603-3",
+      "document_id": "doc-1789159194603",
+      "title": "Text Books",
+      "description": "Text Books \n1.Programming with C ByronS. Gottfried, TataMcGrawHill\n2.Computer Programming in C KerninghanRitchie, PHI \nReference Books \n1.Programming in CStephenC.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 30,
+      "order_index": 2,
+      "prerequisites": [
+        "topic-doc-1789159194603-2"
+      ],
+      "status": "locked",
+      "source_chunk": "Text Books \n1.Programming with C ByronS. Gottfried, TataMcGrawHill\n2.Computer Programming in C KerninghanRitchie, PHI \nReference Books \n1.Programming in CStephenC. Kochan, CBS publishers. \n2.Programming in C–E. Balaguruswamy, McGrawHill. \n3.Let us C–Yashwant Kanetkar, BPB.\n4.A Book on C–Al KelleyandIraPohl, AddisonWesley. \n5.Mastering Turbo CStanKelly Bootle, BPB Publications. \n6.Pointers in CYashwantKanetkar, BPB. \n7.The Spirit of CbyMunishcooper, JaicoBooks."
+    },
+    {
+      "id": "topic-doc-1789159194603-4",
+      "document_id": "doc-1789159194603",
+      "title": "MODULEI",
+      "description": "MODULEI\n◦Problemsolving:ProblemsolvingusingAlgorithms,Pseudocodeand\nFlowcharts.\n◦Cfundamentals:Characterset,Constants,Identifiers,Keywords,Basic\ndatatypes,Variables,Operatorsandits",
+      "difficulty": "advanced",
+      "estimated_minutes": 20,
+      "order_index": 3,
+      "prerequisites": [
+        "topic-doc-1789159194603-3"
+      ],
+      "status": "locked",
+      "source_chunk": "MODULEI\n◦Problemsolving:ProblemsolvingusingAlgorithms,Pseudocodeand\nFlowcharts.\n◦Cfundamentals:Characterset,Constants,Identifiers,Keywords,Basic\ndatatypes,Variables,Operatorsanditsprecedence,Bitwiseoperators,\nExpressions,Statements,InputandOutputstatements–StructureofaC\nprogram–simpleprograms."
+    },
+    {
+      "id": "topic-doc-1789159194603-5",
+      "document_id": "doc-1789159194603",
+      "title": "Problem solving",
+      "description": "Problem solving\n◦Fundamental skill in programming\n◦Importance of understanding the problem\n◦Breaking it down into manageable parts\n◦First step in problemsolving→thorough understand",
+      "difficulty": "advanced",
+      "estimated_minutes": 25,
+      "order_index": 4,
+      "prerequisites": [
+        "topic-doc-1789159194603-4"
+      ],
+      "status": "locked",
+      "source_chunk": "Problem solving\n◦Fundamental skill in programming\n◦Importance of understanding the problem\n◦Breaking it down into manageable parts\n◦First step in problemsolving→thorough understandingof the problem\n◦Secondstep →break it downinto smaller, more manageable parts\nI.Decomposition\nII.Algorithm Design\nIII.Pseudocode and Flowcharts"
+    },
+    {
+      "id": "topic-doc-1789159194603-6",
+      "document_id": "doc-1789159194603",
+      "title": "ALGORITHM",
+      "description": "ALGORITHM\n◦Describes the sequence of actions leading to the solution of the given problem\n◦Algorithms typically follow a logical structure:\n•Input:The algorithm receives input data",
+      "difficulty": "advanced",
+      "estimated_minutes": 30,
+      "order_index": 5,
+      "prerequisites": [
+        "topic-doc-1789159194603-5"
+      ],
+      "status": "locked",
+      "source_chunk": "ALGORITHM\n◦Describes the sequence of actions leading to the solution of the given problem\n◦Algorithms typically follow a logical structure:\n•Input:The algorithm receives input data.\n•Processing:The algorithm performs a series of operations on the input \ndata.\n•Output:The algorithm produces the desired output."
+    },
+    {
+      "id": "topic-doc-1789159297620-1",
+      "document_id": "doc-1789159297620",
+      "title": "System Architecture and Levels of Abstraction",
+      "description": "Understand the macro-level structure of a Linux operating system, distinguishing between hardware, the kernel space, and user space.",
+      "difficulty": "beginner",
+      "estimated_minutes": 20,
+      "order_index": 0,
+      "prerequisites": [],
+      "status": "available",
+      "source_chunk": "1 THE BIG PICTURE\n1.1 Levels and Layers of Abstraction in a Linux System\n1.2 Hardware: Understanding Main Memory\n1.3 The Kernel\n1.3.1 Process Management\n1.3.2 Memory Management\n1.3.3 Device Drivers and Management\n1.3.4 System Calls and Support\n1.4 User Space\n1.5 Users\n1.6 Looking Forward\n\nChapter 1: The Big Picture dived straight into the transparent depths of Linux-based operating systems and shows us how all the pieces fit together, providing an essential understanding of what's going on under the hood without getting bogged down in minutiae—making this an essential foundation for the Linux architecture."
+    },
+    {
+      "id": "topic-doc-1789159297620-2",
+      "document_id": "doc-1789159297620",
+      "title": "Kernel Subsystems and Operating System Primitives",
+      "description": "Examine the internal functions of the Linux kernel, including process scheduling, memory virtualization, device control, and system calls.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 30,
+      "order_index": 1,
+      "prerequisites": [
+        "topic-doc-1789159297620-1"
+      ],
+      "status": "locked",
+      "source_chunk": "1.3 The Kernel\n1.3.1 Process Management\n1.3.2 Memory Management\n1.3.3 Device Drivers and Management\n1.3.4 System Calls and Support\n1.4 User Space\n1.5 Users\n\nThe kernel is responsible for managing the system's hardware resources and acting as an abstraction layer between hardware and user software. Core kernel responsibilities include process management (handling CPU scheduling and process execution states), memory management (allocating physical memory and maintaining virtual memory mappings), device drivers and device management (translating hardware communication into standard device interfaces), and providing system calls and support routines that user-space programs use to request privileged operations."
+    },
+    {
+      "id": "topic-doc-1789159297620-3",
+      "document_id": "doc-1789159297620",
+      "title": "The Unix Shell and Directory Hierarchy Navigation",
+      "description": "Learn the fundamentals of command-line interaction, path traversal, basic file operations, and wildcard expansion.",
+      "difficulty": "beginner",
+      "estimated_minutes": 25,
+      "order_index": 2,
+      "prerequisites": [
+        "topic-doc-1789159297620-2"
+      ],
+      "status": "locked",
+      "source_chunk": "2 BASIC COMMANDS AND DIRECTORY HIERARCHY\n2.1 The Bourne Shell: /bin/sh\n2.2 Using the Shell\n2.2.1 The Shell Window\n2.2.2 cat\n2.3 Basic Commands\n2.3.1 ls\n2.3.2 cp\n2.3.3 mv\n2.3.4 touch\n2.3.5 rm\n2.3.6 echo\n2.4 Navigating Directories\n2.4.1 cd\n2.4.2 mkdir\n2.4.3 rmdir\n2.4.4 Shell Globbing (“Wildcards”)\n\nInteracting with a Linux system begins in user space through the shell. The user communicates with the kernel and filesystems by issuing basic commands to inspect directory structures, manipulate files, and utilize globbing patterns for pathname expansion."
+    },
+    {
+      "id": "topic-doc-1789159297620-4",
+      "document_id": "doc-1789159297620",
+      "title": "Standard Streams, I/O Redirection, and Text Filters",
+      "description": "Master standard input, standard output, and standard error streams, alongside foundational text-processing command utilities.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 30,
+      "order_index": 3,
+      "prerequisites": [
+        "topic-doc-1789159297620-3"
+      ],
+      "status": "locked",
+      "source_chunk": "2.2.3 Standard Input and Standard Output\n2.5 Intermediate Commands\n2.5.1 grep\n2.5.2 less\n2.5.3 pwd\n2.5.4 diff\n2.5.5 file\n2.5.6 find and locate\n2.5.7 head and tail\n2.5.8 sort\n2.14 Shell Input and Output\n2.14.1 Standard Error\n2.14.2 Standard Input Redirection\n2.15 Understanding Error Messages\n2.15.1 Anatomy of a Unix Error Message\n2.15.2 Common Errors\n\nUnix systems center on textual streams. Programs communicate via standard input, standard output, and standard error. With shell redirection and pipelines, output from one utility can be filtered through intermediate tools such as grep, sort, or head to process system data dynamically."
+    },
+    {
+      "id": "topic-doc-1789159297620-5",
+      "document_id": "doc-1789159297620",
+      "title": "Process Control, Permissions, and File Links",
+      "description": "Understand process lifecycles, background execution, Unix file modes and permissions, and symbolic linking.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 35,
+      "order_index": 4,
+      "prerequisites": [
+        "topic-doc-1789159297620-4"
+      ],
+      "status": "locked",
+      "source_chunk": "2.16 Listing and Manipulating Processes\n2.16.1 Command Options\n2.16.2 Process Termination\n2.16.3 Job Control\n2.16.4 Background Processes\n2.17 File Modes and Permissions\n2.17.1 Modifying Permissions\n2.17.2 Working with Symbolic Links\n2.18 Archiving and Compressing Files\n2.18.1 gzip\n\nUser-space operations require managing concurrency and system security. Users manage executing tasks using process listing, termination signals, and background job controls, while data security is enforced through filesystem permissions, file modes, and referencing via symbolic links."
+    },
+    {
+      "id": "topic-doc-1789159365962-1",
+      "document_id": "doc-1789159365962",
+      "title": "Algorithmic Problem Solving and Flowcharts",
+      "description": "Learn the principles of breaking down computational problems using structured decomposition, algorithms, pseudocode, and flowcharts.",
+      "difficulty": "beginner",
+      "estimated_minutes": 25,
+      "order_index": 0,
+      "prerequisites": [],
+      "status": "needs_review",
+      "source_chunk": "Problem solving is a fundamental skill in programming. The first step in problem solving is a thorough understanding of the problem, followed by breaking it down into smaller, more manageable parts: Decomposition, Algorithm Design, and Pseudocode/Flowcharts. An algorithm describes the sequence of actions leading to the solution of the given problem. Algorithms typically follow a logical structure: Input (receives input data), Processing (performs a series of operations on input data), and Output (produces the desired output). Properties of an algorithm include being precise and unambiguously described, finiteness (stops after a finite number of steps), uniqueness, effectiveness, and generality (must solve every instance of a problem). A flowchart is a diagram which visually presents the flow of data, displaying the operations performed and their sequence. Pseudocode is the informal language representation of an algorithm using structured English-like statements."
+    },
+    {
+      "id": "topic-doc-1789159365962-2",
+      "document_id": "doc-1789159365962",
+      "title": "Structure of a C Program and the Compilation Pipeline",
+      "description": "Understand basic C program structure and explore how source code transitions through preprocessing, compiling, assembling, and linking into an executable.",
+      "difficulty": "beginner",
+      "estimated_minutes": 30,
+      "order_index": 1,
+      "prerequisites": [
+        "topic-doc-1789159365962-1"
+      ],
+      "status": "locked",
+      "source_chunk": "Every C program starts execution at the main() function. The line '#include <stdio.h>' includes the Standard Input Output library, allowing functions like printf() to display text, while 'return 0;' terminates main() and signals successful execution to the operating system. Translating C code into machine code involves the compilation pipeline. First, Preprocessing replaces header directives like '#include <stdio.h>' with actual code and strips comments, outputting an intermediate file (.i). Next, Compiling translates this preprocessed code into low-level assembly language (.s). Then, Assembling converts assembly code into machine-readable object code (.o or .obj). Finally, Linking combines the object file with external runtime libraries, such as the C standard library providing printf, generating the final executable file (.exe or a.out)."
+    },
+    {
+      "id": "topic-doc-1789159365962-3",
+      "document_id": "doc-1789159365962",
+      "title": "Lexical Tokens: Character Sets, Keywords, and Identifiers",
+      "description": "Examine the foundational building blocks of C source code, including character sets, token categorization, keywords, and naming rules for identifiers.",
+      "difficulty": "beginner",
+      "estimated_minutes": 20,
+      "order_index": 2,
+      "prerequisites": [
+        "topic-doc-1789159365962-2"
+      ],
+      "status": "locked",
+      "source_chunk": "The C character set refers to all valid characters used to form words, numbers, and expressions, categorized into letters, digits, special characters, and white spaces. Whitespaces are ignored by the compiler unless contained within string constants, but are prohibited within individual tokens. A C token is the smallest individual unit of a program; the compiler breaks code into tokens before subsequent compilation stages. Words are categorized as either keywords or identifiers. Keywords are reserved building blocks with fixed meanings that cannot be changed; ANSI C defines 32 keywords, all written in lowercase. Identifiers are user-defined names given to program elements like variables and functions. Rules for valid identifiers require that the first character must be a letter or underscore, subsequent characters can only be letters, numbers, or underscores, keywords cannot be used, and no whitespace or special characters are permitted."
+    },
+    {
+      "id": "topic-doc-1789159365962-4",
+      "document_id": "doc-1789159365962",
+      "title": "Constants and Literal Representations",
+      "description": "Explore the distinct representations and storage semantics of numeric, character, and string literals in C.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 25,
+      "order_index": 3,
+      "prerequisites": [
+        "topic-doc-1789159365962-3"
+      ],
+      "status": "locked",
+      "source_chunk": "Constants are fixed values that do not change during program execution. Integer constants consist of numeric digits without fractional parts and can be expressed in decimal (digits 0-9), octal (digits 0-7 starting with a leading 0, e.g., 037), or hexadecimal (prefixed with 0x or 0X, using 0-9 and A-F). Real constants represent fractional or floating-point values and can be written in scientific notation with a mantissa and an exponent representing base-10 scale factors. Single character constants consist of a single character enclosed in single quotes (e.g., 'a') and possess an underlying integer value corresponding to their ASCII encoding. In contrast, string constants are sequences of characters enclosed in double quotes (e.g., \"Hello\"). Unlike character constants, string constants cannot be evaluated directly as single ASCII numeric values. Special escape sequences preceded by a backslash allow non-printable characters like newlines ('\\n') to be embedded."
+    },
+    {
+      "id": "topic-doc-1789159365962-5",
+      "document_id": "doc-1789159365962",
+      "title": "Variables, Fundamental Data Types, and Format Specifiers",
+      "description": "Master variable declaration, memory allocation attributes, ranges for primary C data types, and their matching format specifiers.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 35,
+      "order_index": 4,
+      "prerequisites": [
+        "topic-doc-1789159365962-4"
+      ],
+      "status": "locked",
+      "source_chunk": "In C programming, a variable is a named memory location whose stored value may change during program execution. A data type defines the type of value a variable holds, the size of memory reserved in bytes, and the allowable numerical range. Without data types, the compiler cannot interpret the stored binary patterns. C provides primary data types: 'int' for whole numbers (typically 4 bytes, range -2,147,483,648 to 2,147,483,647), 'float' for single-precision decimals (4 bytes, formatted with %f), 'double' for double-precision decimals (8 bytes, formatted with %lf), and 'char' for single characters (1 byte, stored as signed or unsigned ASCII integer values). Format specifiers like %d for signed integers, %u for unsigned integers, %c for characters, and %s for strings instruct standard input/output functions how to format and parse binary data. The 'void' data type explicitly denotes an absence of value, often used when functions do not return output."
+    },
+    {
+      "id": "topic-doc-1789171018968-1",
+      "document_id": "doc-1789171018968",
+      "title": "Problem Solving: Algorithms, Flowcharts, and Pseudocode",
+      "description": "Learn the foundational principles of problem decomposition and explore how to formulate solutions using structured algorithms, pseudocode, and standard flowchart diagrams.",
+      "difficulty": "beginner",
+      "estimated_minutes": 25,
+      "order_index": 0,
+      "prerequisites": [],
+      "status": "available",
+      "source_chunk": "Problem solving is a fundamental skill in programming. The first step in problem solving is a thorough understanding of the problem, and the second step is to break it down into smaller, more manageable parts through decomposition, algorithm design, pseudocode, and flowcharts. An algorithm describes the sequence of actions leading to the solution of the given problem. Algorithms typically follow a logical structure: Input (the algorithm receives input data), Processing (the algorithm performs a series of operations on the input data), and Output (the algorithm produces the desired output). An algorithm must be precise and unambiguously described, must terminate after a finite number of steps (finiteness), must be effective, must be general to solve every instance of a problem, and each step must be uniquely defined. A flowchart is a diagram which visually presents the flow of data, displaying the operations performed and their execution sequence using standardized symbols. While an algorithm is a sequence of instructions used to solve a problem, a flowchart is its graphical representation, and pseudocode represents the algorithm using language-based constructs."
+    },
+    {
+      "id": "topic-doc-1789171018968-2",
+      "document_id": "doc-1789171018968",
+      "title": "Structure of a C Program and the Compilation Pipeline",
+      "description": "Understand the anatomical structure of a standard C program and inspect the multi-stage transformation from source code to machine executable.",
+      "difficulty": "beginner",
+      "estimated_minutes": 30,
+      "order_index": 1,
+      "prerequisites": [
+        "topic-doc-1789171018968-1"
+      ],
+      "status": "locked",
+      "source_chunk": "#include <stdio.h> includes the Standard Input Output library, which allows us to use the printf function to display text. int main() is the main function where program execution starts; every C program must have a main function. printf(\"Hello, World!\\n\"); prints text to the screen, where \\n is an escape sequence that creates a newline. return 0; ends the main function and signals to the operating system that the program finished successfully. Compilation is the process of translating high-level C code into machine code that the computer can execute using a compiler such as gcc. The compilation process consists of four phases: 1. Preprocessing: #include <stdio.h> is replaced by the contents of the header file, comments are removed, producing an intermediate file (.i). 2. Compiling: The preprocessed code is compiled into assembly code, resulting in an assembly file (.s) containing low-level instructions. 3. Assembling: The assembly code is converted into machine code, creating an object file (.o or .obj). 4. Linking: The linker combines the object file with required runtime libraries (such as the C standard library containing printf) to produce the final executable file."
+    },
+    {
+      "id": "topic-doc-1789171018968-3",
+      "document_id": "doc-1789171018968",
+      "title": "C Lexical Tokens: Character Sets, Keywords, and Identifiers",
+      "description": "Examine the building blocks of C source code, including character sets, token categorization, reserved keywords, and naming rules for identifiers.",
+      "difficulty": "beginner",
+      "estimated_minutes": 20,
+      "order_index": 2,
+      "prerequisites": [
+        "topic-doc-1789171018968-2"
+      ],
+      "status": "locked",
+      "source_chunk": "The character set refers to all valid characters that can be used in a source program for forming words, expressions, and numbers. Categories include letters, digits, special characters, and white spaces. C language supports about 256 characters, each having an equivalent ASCII representation. White space is ignored by the compiler unless part of a string constant, but whitespace is strictly prohibited within keywords and identifiers. A token is the smallest individual unit in a C program; the compiler breaks a program into tokens during the initial stages of compilation. Every word in C can be either a keyword or an identifier. Keywords are predefined building blocks with fixed meanings that cannot be altered; there are 32 standard keywords in C, all written in lowercase. Identifiers are user-defined names given to program elements such as variables and functions. Rules for identifiers require that the first character must be an alphabet letter or underscore, characters must consist only of letters, digits, or underscores, no whitespace is permitted, and reserved keywords cannot be used as identifiers."
+    },
+    {
+      "id": "topic-doc-1789171018968-4",
+      "document_id": "doc-1789171018968",
+      "title": "Constants, Variables, and Primary Data Types",
+      "description": "Explore memory representation in C, comparing fixed literal constants against mutable variables and evaluating fundamental data types with their format specifiers.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 35,
+      "order_index": 3,
+      "prerequisites": [
+        "topic-doc-1789171018968-3"
+      ],
+      "status": "locked",
+      "source_chunk": "Constants are fixed values that never change during program execution. Integer constants can be decimal (digits 0-9), octal (digits 0-7 starting with a leading 0), or hexadecimal (prefixed with 0x or 0X). Real constants represent floating-point quantities using mantissa and exponent components. A character constant contains a single character enclosed in single quotes and evaluates directly to its ASCII integer value, whereas string constants consist of character sequences enclosed in double quotes. A variable is an identifier used to store a data value that may mutate during runtime. In C, a data type defines the type of data a variable can hold, its range, and the memory size allocated. Fundamental data types include int (typically 4 bytes, using format specifier %d or %u for unsigned), char (1 byte, range -128 to 127, specifier %c), float (4 bytes single-precision, specifier %f), double (8 bytes double-precision, specifier %lf), and void (which represents an absence of value or type, commonly used with functions that return no value)."
+    },
+    {
+      "id": "topic-doc-1789172587651-1",
+      "document_id": "doc-1789172587651",
+      "title": "PROBLEM SOLVING AND",
+      "description": "PROBLEM SOLVING AND \nPROGRAMMING TECHNIQUES\nNeethuSubash\n9744465875\nAssistantProfessor\nDepartmentofComputerScience&Engineering\nMarAthanasiusCollegeofEngineering.",
+      "difficulty": "beginner",
+      "estimated_minutes": 20,
+      "order_index": 0,
+      "prerequisites": [],
+      "status": "available",
+      "source_chunk": "PROBLEM SOLVING AND \nPROGRAMMING TECHNIQUES\nNeethuSubash\n9744465875\nAssistantProfessor\nDepartmentofComputerScience&Engineering\nMarAthanasiusCollegeofEngineering"
+    },
+    {
+      "id": "topic-doc-1789172587651-2",
+      "document_id": "doc-1789172587651",
+      "title": "SYLLABUS",
+      "description": "SYLLABUS\nIProblemsolving:ProblemsolvingusingAlgorithms,PseudocodeandFlowcharts.\nCfundamentals:Characterset,Constants,Identifiers,Keywords,Basicdatatypes,Variables,Operatorsandits\np",
+      "difficulty": "intermediate",
+      "estimated_minutes": 25,
+      "order_index": 1,
+      "prerequisites": [
+        "topic-doc-1789172587651-1"
+      ],
+      "status": "locked",
+      "source_chunk": "SYLLABUS\nIProblemsolving:ProblemsolvingusingAlgorithms,PseudocodeandFlowcharts.\nCfundamentals:Characterset,Constants,Identifiers,Keywords,Basicdatatypes,Variables,Operatorsandits\nprecedence,Bitwiseoperators,Expressions,Statements,InputandOutputstatements–StructureofaCprogram–\nsimpleprograms.\nIIControlstatements:If,if-else,nestedif,switch,while,dowhile,for,breakcontinue,nestedloops.Single\ndimensionalarrays–defininganarray,arrayinitialization,accessingarrayelements,Enumerateddatatype,Two\ndimensionalarrays–definingatwodimensionalarray–Programsformatrixprocessing.ProgramsforSequential\nsearch,Bubblesort.\nIIIStrings:Declaringastringvariable,readinganddisplayingstrings,stringrelatedlibraryfunctions–Programsfor\nstringmatching.Functions:Functiondefinition,functioncall,functionprototype,parameterpassing–Recursion–\nPassingarraytofunction.Macros:Definingandcallingmacros.\nIVStructures:Definingastructurevariable,accessingmembers,arrayofstructures,passingstructuretofunction.\nUnion,Pointers:declaration,operationsonpointers,passingpointertoafunction,accessingarrayelementsusing\npointers,processingstringsusingpointers,pointertopointer,arrayofpointers,pointertofunction,pointerto\nstructure,Dynamicmemoryallocation.\nVFiles:DifferenttypesoffilesinC–OpeningClosingafile–WritingtoandReadingfromafile–Processingfiles–\nLibraryfunctionsrelatedtofile–fseek(),ftell(),fread(),fwrite().StorageClassassociatedwithvariables:\nautomatic,static,externalandregister."
+    },
+    {
+      "id": "topic-doc-1789172587651-3",
+      "document_id": "doc-1789172587651",
+      "title": "Text Books",
+      "description": "Text Books \n1.Programming with C ByronS. Gottfried, TataMcGrawHill\n2.Computer Programming in C KerninghanRitchie, PHI \nReference Books \n1.Programming in CStephenC.",
+      "difficulty": "intermediate",
+      "estimated_minutes": 30,
+      "order_index": 2,
+      "prerequisites": [
+        "topic-doc-1789172587651-2"
+      ],
+      "status": "locked",
+      "source_chunk": "Text Books \n1.Programming with C ByronS. Gottfried, TataMcGrawHill\n2.Computer Programming in C KerninghanRitchie, PHI \nReference Books \n1.Programming in CStephenC. Kochan, CBS publishers. \n2.Programming in C–E. Balaguruswamy, McGrawHill. \n3.Let us C–Yashwant Kanetkar, BPB.\n4.A Book on C–Al KelleyandIraPohl, AddisonWesley. \n5.Mastering Turbo CStanKelly Bootle, BPB Publications. \n6.Pointers in CYashwantKanetkar, BPB. \n7.The Spirit of CbyMunishcooper, JaicoBooks."
+    },
+    {
+      "id": "topic-doc-1789172587651-4",
+      "document_id": "doc-1789172587651",
+      "title": "MODULEI",
+      "description": "MODULEI\n◦Problemsolving:ProblemsolvingusingAlgorithms,Pseudocodeand\nFlowcharts.\n◦Cfundamentals:Characterset,Constants,Identifiers,Keywords,Basic\ndatatypes,Variables,Operatorsandits",
+      "difficulty": "advanced",
+      "estimated_minutes": 20,
+      "order_index": 3,
+      "prerequisites": [
+        "topic-doc-1789172587651-3"
+      ],
+      "status": "locked",
+      "source_chunk": "MODULEI\n◦Problemsolving:ProblemsolvingusingAlgorithms,Pseudocodeand\nFlowcharts.\n◦Cfundamentals:Characterset,Constants,Identifiers,Keywords,Basic\ndatatypes,Variables,Operatorsanditsprecedence,Bitwiseoperators,\nExpressions,Statements,InputandOutputstatements–StructureofaC\nprogram–simpleprograms."
+    },
+    {
+      "id": "topic-doc-1789172587651-5",
+      "document_id": "doc-1789172587651",
+      "title": "Problem solving",
+      "description": "Problem solving\n◦Fundamental skill in programming\n◦Importance of understanding the problem\n◦Breaking it down into manageable parts\n◦First step in problemsolving→thorough understand",
+      "difficulty": "advanced",
+      "estimated_minutes": 25,
+      "order_index": 4,
+      "prerequisites": [
+        "topic-doc-1789172587651-4"
+      ],
+      "status": "locked",
+      "source_chunk": "Problem solving\n◦Fundamental skill in programming\n◦Importance of understanding the problem\n◦Breaking it down into manageable parts\n◦First step in problemsolving→thorough understandingof the problem\n◦Secondstep →break it downinto smaller, more manageable parts\nI.Decomposition\nII.Algorithm Design\nIII.Pseudocode and Flowcharts"
+    },
+    {
+      "id": "topic-doc-1789172587651-6",
+      "document_id": "doc-1789172587651",
+      "title": "ALGORITHM",
+      "description": "ALGORITHM\n◦Describes the sequence of actions leading to the solution of the given problem\n◦Algorithms typically follow a logical structure:\n•Input:The algorithm receives input data",
+      "difficulty": "advanced",
+      "estimated_minutes": 30,
+      "order_index": 5,
+      "prerequisites": [
+        "topic-doc-1789172587651-5"
+      ],
+      "status": "locked",
+      "source_chunk": "ALGORITHM\n◦Describes the sequence of actions leading to the solution of the given problem\n◦Algorithms typically follow a logical structure:\n•Input:The algorithm receives input data.\n•Processing:The algorithm performs a series of operations on the input \ndata.\n•Output:The algorithm produces the desired output."
+    }
+  ],
+  "learning_objectives": [
+    {
+      "id": "obj-arr-1",
+      "topic_id": "topic-arrays",
+      "description": "Explain how elements are stored in contiguous memory addresses",
+      "mastered": false
+    },
+    {
+      "id": "obj-arr-2",
+      "topic_id": "topic-arrays",
+      "description": "Explain why index lookup is O(1) constant time using memory arithmetic",
+      "mastered": false
+    },
+    {
+      "id": "obj-arr-3",
+      "topic_id": "topic-arrays",
+      "description": "Describe why insertions/deletions take O(n) time due to element shifting",
+      "mastered": false
+    },
+    {
+      "id": "obj-ll-1",
+      "topic_id": "topic-linked-lists",
+      "description": "Explain what a node is (data payload and next pointer reference)",
+      "mastered": false
+    },
+    {
+      "id": "obj-ll-2",
+      "topic_id": "topic-linked-lists",
+      "description": "Explain how traversal works from head to null",
+      "mastered": false
+    },
+    {
+      "id": "obj-ll-3",
+      "topic_id": "topic-linked-lists",
+      "description": "Contrast insertion/deletion efficiency vs arrays (pointer swap vs shifting)",
+      "mastered": false
+    },
+    {
+      "id": "obj-ll-4",
+      "topic_id": "topic-linked-lists",
+      "description": "Explain why linked lists lack O(1) random index access",
+      "mastered": false
+    },
+    {
+      "id": "obj-stk-1",
+      "topic_id": "topic-stacks",
+      "description": "Explain the LIFO (Last-In First-Out) principle clearly",
+      "mastered": false
+    },
+    {
+      "id": "obj-stk-2",
+      "topic_id": "topic-stacks",
+      "description": "Explain push, pop, and peek operations and their O(1) time complexity",
+      "mastered": false
+    },
+    {
+      "id": "obj-stk-3",
+      "topic_id": "topic-stacks",
+      "description": "Describe practical applications like call stacks, undo history, and balanced parentheses",
+      "mastered": false
+    },
+    {
+      "id": "obj-q-1",
+      "topic_id": "topic-queues",
+      "description": "Explain the FIFO (First-In First-Out) principle clearly",
+      "mastered": false
+    },
+    {
+      "id": "obj-q-2",
+      "topic_id": "topic-queues",
+      "description": "Explain enqueue at rear and dequeue at front with O(1) complexity",
+      "mastered": false
+    },
+    {
+      "id": "obj-q-3",
+      "topic_id": "topic-queues",
+      "description": "Describe real-world use cases like task scheduling and Breadth-First Search (BFS)",
+      "mastered": false
+    },
+    {
+      "id": "obj-tr-1",
+      "topic_id": "topic-trees",
+      "description": "Explain tree terminology: Root, Parent, Child, Leaf, and Height",
+      "mastered": false
+    },
+    {
+      "id": "obj-tr-2",
+      "topic_id": "topic-trees",
+      "description": "Explain the BST ordering invariant (left < root < right)",
+      "mastered": false
+    },
+    {
+      "id": "obj-tr-3",
+      "topic_id": "topic-trees",
+      "description": "Contrast In-order, Pre-order, and Post-order traversals and search complexity",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-1-1",
+      "topic_id": "topic-doc-1789156456541-1",
+      "description": "Explain the foundational concepts behind PROBLEM SOLVING AND",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-1-2",
+      "topic_id": "topic-doc-1789156456541-1",
+      "description": "Identify key mechanisms and trade-offs described in the material",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-1-3",
+      "topic_id": "topic-doc-1789156456541-1",
+      "description": "Demonstrate how to apply this knowledge to practical problem solving",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-2-1",
+      "topic_id": "topic-doc-1789156456541-2",
+      "description": "Explain the foundational concepts behind SYLLABUS",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-2-2",
+      "topic_id": "topic-doc-1789156456541-2",
+      "description": "Identify key mechanisms and trade-offs described in the material",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-2-3",
+      "topic_id": "topic-doc-1789156456541-2",
+      "description": "Demonstrate how to apply this knowledge to practical problem solving",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-3-1",
+      "topic_id": "topic-doc-1789156456541-3",
+      "description": "Explain the foundational concepts behind Text Books",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-3-2",
+      "topic_id": "topic-doc-1789156456541-3",
+      "description": "Identify key mechanisms and trade-offs described in the material",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-3-3",
+      "topic_id": "topic-doc-1789156456541-3",
+      "description": "Demonstrate how to apply this knowledge to practical problem solving",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-4-1",
+      "topic_id": "topic-doc-1789156456541-4",
+      "description": "Explain the foundational concepts behind MODULEI",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-4-2",
+      "topic_id": "topic-doc-1789156456541-4",
+      "description": "Identify key mechanisms and trade-offs described in the material",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-4-3",
+      "topic_id": "topic-doc-1789156456541-4",
+      "description": "Demonstrate how to apply this knowledge to practical problem solving",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-5-1",
+      "topic_id": "topic-doc-1789156456541-5",
+      "description": "Explain the foundational concepts behind Problem solving",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-5-2",
+      "topic_id": "topic-doc-1789156456541-5",
+      "description": "Identify key mechanisms and trade-offs described in the material",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-5-3",
+      "topic_id": "topic-doc-1789156456541-5",
+      "description": "Demonstrate how to apply this knowledge to practical problem solving",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-6-1",
+      "topic_id": "topic-doc-1789156456541-6",
+      "description": "Explain the foundational concepts behind ALGORITHM",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-6-2",
+      "topic_id": "topic-doc-1789156456541-6",
+      "description": "Identify key mechanisms and trade-offs described in the material",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789156456541-6-3",
+      "topic_id": "topic-doc-1789156456541-6",
+      "description": "Demonstrate how to apply this knowledge to practical problem solving",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-1-1",
+      "topic_id": "topic-doc-1789159194603-1",
+      "description": "Explain the foundational principles of PROBLEM SOLVING AND",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-1-2",
+      "topic_id": "topic-doc-1789159194603-1",
+      "description": "Identify the operational mechanisms and trade-offs described in the source text",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-1-3",
+      "topic_id": "topic-doc-1789159194603-1",
+      "description": "Demonstrate how this concept functions in practice using plain language",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-2-1",
+      "topic_id": "topic-doc-1789159194603-2",
+      "description": "Explain the foundational principles of SYLLABUS",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-2-2",
+      "topic_id": "topic-doc-1789159194603-2",
+      "description": "Identify the operational mechanisms and trade-offs described in the source text",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-2-3",
+      "topic_id": "topic-doc-1789159194603-2",
+      "description": "Demonstrate how this concept functions in practice using plain language",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-3-1",
+      "topic_id": "topic-doc-1789159194603-3",
+      "description": "Explain the foundational principles of Text Books",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-3-2",
+      "topic_id": "topic-doc-1789159194603-3",
+      "description": "Identify the operational mechanisms and trade-offs described in the source text",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-3-3",
+      "topic_id": "topic-doc-1789159194603-3",
+      "description": "Demonstrate how this concept functions in practice using plain language",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-4-1",
+      "topic_id": "topic-doc-1789159194603-4",
+      "description": "Explain the foundational principles of MODULEI",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-4-2",
+      "topic_id": "topic-doc-1789159194603-4",
+      "description": "Identify the operational mechanisms and trade-offs described in the source text",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-4-3",
+      "topic_id": "topic-doc-1789159194603-4",
+      "description": "Demonstrate how this concept functions in practice using plain language",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-5-1",
+      "topic_id": "topic-doc-1789159194603-5",
+      "description": "Explain the foundational principles of Problem solving",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-5-2",
+      "topic_id": "topic-doc-1789159194603-5",
+      "description": "Identify the operational mechanisms and trade-offs described in the source text",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-5-3",
+      "topic_id": "topic-doc-1789159194603-5",
+      "description": "Demonstrate how this concept functions in practice using plain language",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-6-1",
+      "topic_id": "topic-doc-1789159194603-6",
+      "description": "Explain the foundational principles of ALGORITHM",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-6-2",
+      "topic_id": "topic-doc-1789159194603-6",
+      "description": "Identify the operational mechanisms and trade-offs described in the source text",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159194603-6-3",
+      "topic_id": "topic-doc-1789159194603-6",
+      "description": "Demonstrate how this concept functions in practice using plain language",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-1-1",
+      "topic_id": "topic-doc-1789159297620-1",
+      "description": "Identify the primary architectural layers of a Linux operating system.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-1-2",
+      "topic_id": "topic-doc-1789159297620-1",
+      "description": "Contrast the privileged role of the kernel with unprivileged user space.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-1-3",
+      "topic_id": "topic-doc-1789159297620-1",
+      "description": "Explain how memory and hardware interface with the operating system.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-2-1",
+      "topic_id": "topic-doc-1789159297620-2",
+      "description": "Describe the four core responsibilities of the Linux kernel.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-2-2",
+      "topic_id": "topic-doc-1789159297620-2",
+      "description": "Explain how system calls act as the boundary interface between user space and kernel services.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-2-3",
+      "topic_id": "topic-doc-1789159297620-2",
+      "description": "Differentiate between process management, physical/virtual memory management, and device drivers.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-3-1",
+      "topic_id": "topic-doc-1789159297620-3",
+      "description": "Navigate the Linux directory hierarchy using path commands.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-3-2",
+      "topic_id": "topic-doc-1789159297620-3",
+      "description": "Perform fundamental file manipulations including creation, copying, moving, and deletion.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-3-3",
+      "topic_id": "topic-doc-1789159297620-3",
+      "description": "Apply shell globbing wildcards to match and operate on sets of files.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-4-1",
+      "topic_id": "topic-doc-1789159297620-4",
+      "description": "Distinguish between standard input, standard output, and standard error streams.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-4-2",
+      "topic_id": "topic-doc-1789159297620-4",
+      "description": "Redirect stream inputs and outputs using redirection operators.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-4-3",
+      "topic_id": "topic-doc-1789159297620-4",
+      "description": "Filter and inspect file content using utilities like grep, less, head, tail, and diff.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-5-1",
+      "topic_id": "topic-doc-1789159297620-5",
+      "description": "Inspect active processes and apply job control mechanisms to manage background tasks.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-5-2",
+      "topic_id": "topic-doc-1789159297620-5",
+      "description": "Interpret and modify Unix file permission modes for users, groups, and others.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159297620-5-3",
+      "topic_id": "topic-doc-1789159297620-5",
+      "description": "Differentiate between symbolic links and regular filesystem entries.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-1-1",
+      "topic_id": "topic-doc-1789159365962-1",
+      "description": "Explain the stages of problem decomposition from conceptual understanding to implementation",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-1-2",
+      "topic_id": "topic-doc-1789159365962-1",
+      "description": "Differentiate between an algorithm, a flowchart, and pseudocode",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-1-3",
+      "topic_id": "topic-doc-1789159365962-1",
+      "description": "Identify the essential properties of an effective algorithm such as finiteness, precision, and generality",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-2-1",
+      "topic_id": "topic-doc-1789159365962-2",
+      "description": "Describe the purpose of key structural elements in a basic C program including '#include' and 'main()'",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-2-2",
+      "topic_id": "topic-doc-1789159365962-2",
+      "description": "Trace the four distinct phases of the C build process: preprocessing, compilation, assembly, and linking",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-2-3",
+      "topic_id": "topic-doc-1789159365962-2",
+      "description": "Identify the intermediate files generated at each step (.i, .s, .o, and executables)",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-3-1",
+      "topic_id": "topic-doc-1789159365962-3",
+      "description": "Classify the components of the C character set and explain how whitespace is handled",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-3-2",
+      "topic_id": "topic-doc-1789159365962-3",
+      "description": "Define what constitutes a token in C source code",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-3-3",
+      "topic_id": "topic-doc-1789159365962-3",
+      "description": "Distinguish between keywords and identifiers while applying proper identifier naming rules",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-4-1",
+      "topic_id": "topic-doc-1789159365962-4",
+      "description": "Differentiate between decimal, octal, and hexadecimal integer constants using base prefixes",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-4-2",
+      "topic_id": "topic-doc-1789159365962-4",
+      "description": "Explain scientific notation representation (mantissa and exponent) for real constants",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-4-3",
+      "topic_id": "topic-doc-1789159365962-4",
+      "description": "Contrast single-character constants with string constants in terms of syntax and ASCII interpretation",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-5-1",
+      "topic_id": "topic-doc-1789159365962-5",
+      "description": "Explain how data types determine memory size, internal representation, and range of values",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-5-2",
+      "topic_id": "topic-doc-1789159365962-5",
+      "description": "Compare the primary data types: int, float, double, char, and void",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789159365962-5-3",
+      "topic_id": "topic-doc-1789159365962-5",
+      "description": "Map standard format specifiers to their corresponding signed and unsigned data representations",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789171018968-1-1",
+      "topic_id": "topic-doc-1789171018968-1",
+      "description": "Explain the core properties of an effective algorithm including finiteness, uniqueness, and precision.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789171018968-1-2",
+      "topic_id": "topic-doc-1789171018968-1",
+      "description": "Contrast the visual representation of flowcharts with text-based pseudocode and natural language algorithms.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789171018968-1-3",
+      "topic_id": "topic-doc-1789171018968-1",
+      "description": "Construct step-by-step algorithms and pseudocode for basic arithmetic and logical decisions.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789171018968-2-1",
+      "topic_id": "topic-doc-1789171018968-2",
+      "description": "Identify the primary components of a minimal C program, including preprocessor directives, the main function, and return codes.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789171018968-2-2",
+      "topic_id": "topic-doc-1789171018968-2",
+      "description": "Trace the four progressive phases of C compilation: preprocessing, compiling, assembling, and linking.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789171018968-2-3",
+      "topic_id": "topic-doc-1789171018968-2",
+      "description": "Distinguish intermediate file types (.i, .s, .o, and executables) generated during program build steps.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789171018968-3-1",
+      "topic_id": "topic-doc-1789171018968-3",
+      "description": "Define what constitutes a C token and classify source elements into tokens.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789171018968-3-2",
+      "topic_id": "topic-doc-1789171018968-3",
+      "description": "Differentiate between reserved keywords and user-defined identifiers.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789171018968-3-3",
+      "topic_id": "topic-doc-1789171018968-3",
+      "description": "Apply syntax rules to validate legal and illegal identifier names in C.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789171018968-4-1",
+      "topic_id": "topic-doc-1789171018968-4",
+      "description": "Categorize numeric, character, and string constants, detailing how integer bases and escape sequences are represented.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789171018968-4-2",
+      "topic_id": "topic-doc-1789171018968-4",
+      "description": "Analyze primary data types (int, float, double, char, void) in terms of bit-width, signed/unsigned range, and memory allocation.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789171018968-4-3",
+      "topic_id": "topic-doc-1789171018968-4",
+      "description": "Select appropriate format specifiers for input and output operations with standard types.",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-1-1",
+      "topic_id": "topic-doc-1789172587651-1",
+      "description": "Explain the foundational principles of PROBLEM SOLVING AND",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-1-2",
+      "topic_id": "topic-doc-1789172587651-1",
+      "description": "Identify the operational mechanisms and trade-offs described in the source text",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-1-3",
+      "topic_id": "topic-doc-1789172587651-1",
+      "description": "Demonstrate how this concept functions in practice using plain language",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-2-1",
+      "topic_id": "topic-doc-1789172587651-2",
+      "description": "Explain the foundational principles of SYLLABUS",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-2-2",
+      "topic_id": "topic-doc-1789172587651-2",
+      "description": "Identify the operational mechanisms and trade-offs described in the source text",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-2-3",
+      "topic_id": "topic-doc-1789172587651-2",
+      "description": "Demonstrate how this concept functions in practice using plain language",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-3-1",
+      "topic_id": "topic-doc-1789172587651-3",
+      "description": "Explain the foundational principles of Text Books",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-3-2",
+      "topic_id": "topic-doc-1789172587651-3",
+      "description": "Identify the operational mechanisms and trade-offs described in the source text",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-3-3",
+      "topic_id": "topic-doc-1789172587651-3",
+      "description": "Demonstrate how this concept functions in practice using plain language",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-4-1",
+      "topic_id": "topic-doc-1789172587651-4",
+      "description": "Explain the foundational principles of MODULEI",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-4-2",
+      "topic_id": "topic-doc-1789172587651-4",
+      "description": "Identify the operational mechanisms and trade-offs described in the source text",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-4-3",
+      "topic_id": "topic-doc-1789172587651-4",
+      "description": "Demonstrate how this concept functions in practice using plain language",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-5-1",
+      "topic_id": "topic-doc-1789172587651-5",
+      "description": "Explain the foundational principles of Problem solving",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-5-2",
+      "topic_id": "topic-doc-1789172587651-5",
+      "description": "Identify the operational mechanisms and trade-offs described in the source text",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-5-3",
+      "topic_id": "topic-doc-1789172587651-5",
+      "description": "Demonstrate how this concept functions in practice using plain language",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-6-1",
+      "topic_id": "topic-doc-1789172587651-6",
+      "description": "Explain the foundational principles of ALGORITHM",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-6-2",
+      "topic_id": "topic-doc-1789172587651-6",
+      "description": "Identify the operational mechanisms and trade-offs described in the source text",
+      "mastered": false
+    },
+    {
+      "id": "obj-topic-doc-1789172587651-6-3",
+      "topic_id": "topic-doc-1789172587651-6",
+      "description": "Demonstrate how this concept functions in practice using plain language",
+      "mastered": false
+    }
+  ],
+  "study_sessions": [],
+  "feynman_attempts": [
+    {
+      "id": "attempt-1789159248834",
+      "topic_id": "topic-doc-1789159194603-1",
+      "student_explanation": "I think this is really awesome.",
+      "score": 0,
+      "passed": false,
+      "strengths": [
+        "Expressed positive enthusiasm."
+      ],
+      "missing_concepts": [
+        "Did not explain any foundational principles of problem solving or programming techniques.",
+        "Did not provide an intuitive explanation, operational mechanism, or real-world example."
+      ],
+      "incorrect_concepts": [],
+      "feedback": "I love the enthusiasm, but saying something is awesome doesn't tell us how it works! To really understand an idea, you need to be able to explain the core concepts in your own simple words as if teaching a beginner.",
+      "retry_prompt": "Take another look at the topic. What does 'problem solving and programming techniques' actually mean to you? Can you walk me through how someone breaks down a problem and solves it step by step?",
+      "created_at": "2026-09-11T20:40:48.834Z"
+    },
+    {
+      "id": "attempt-1789159543771",
+      "topic_id": "topic-doc-1789159365962-1",
+      "student_explanation": "Algorithms are set of instructions to help us solve a problem. They define the steps that should be taken to reach a solution. Algorithm is extended using psuedocode which is similar to something like python code but more understandable to a person with no programming knowhow. Flowcharts are diagramic representation of how an algorithm is performed using different shapes to classify each step and arrows to show the flow of the algorithm.",
+      "score": 58,
+      "passed": false,
+      "strengths": [
+        "Clearly articulated the concept of an algorithm as a sequence of steps to solve a problem.",
+        "Provided intuitive, plain-English descriptions of both pseudocode and flowcharts, highlighting the visual nature of flowcharts and the readability of pseudocode."
+      ],
+      "missing_concepts": [
+        "Stages of problem decomposition (understanding the problem and breaking it down into smaller, manageable parts).",
+        "Essential properties of an effective algorithm, such as finiteness (must terminate), precision/unambiguity, and generality (works across all problem instances).",
+        "The core structural model of an algorithm: Input, Processing, and Output."
+      ],
+      "incorrect_concepts": [],
+      "feedback": "You've got a very solid, intuitive grasp of how algorithms, pseudocode, and flowcharts relate to each other! However, you skipped the earlier stages of how we actually break a problem down (decomposition) and the key rules an algorithm must follow—like making sure it actually finishes and works for every case.",
+      "retry_prompt": "Imagine you're explaining this to a friend who is building a recipe: before writing down the steps, how do you break the big task into smaller pieces? And what special rules must the recipe follow so a robot doesn't get stuck in an infinite loop or confused by vague instructions?",
+      "created_at": "2026-09-11T20:45:43.771Z"
+    }
+  ],
+  "revisions": [
+    {
+      "id": "rev-sample-1",
+      "topic_id": "topic-arrays",
+      "topic_title": "Arrays & Contiguous Memory",
+      "due_date": "2026-09-12",
+      "interval_days": 1,
+      "status": "pending",
+      "attempt_number": 1,
+      "created_at": "2026-09-11T19:00:50.035Z"
+    },
+    {
+      "id": "rev-1789159248834-yn97z",
+      "topic_id": "topic-doc-1789159194603-1",
+      "topic_title": "PROBLEM SOLVING AND",
+      "due_date": "2026-09-12",
+      "interval_days": 1,
+      "status": "pending",
+      "attempt_number": 1,
+      "created_at": "2026-09-11T20:40:48.834Z"
+    },
+    {
+      "id": "rev-1789159248834-5ndn6",
+      "topic_id": "topic-doc-1789159194603-1",
+      "topic_title": "PROBLEM SOLVING AND",
+      "due_date": "2026-09-14",
+      "interval_days": 3,
+      "status": "pending",
+      "attempt_number": 2,
+      "created_at": "2026-09-11T20:40:48.834Z"
+    },
+    {
+      "id": "rev-1789159248834-rnkxw",
+      "topic_id": "topic-doc-1789159194603-1",
+      "topic_title": "PROBLEM SOLVING AND",
+      "due_date": "2026-09-18",
+      "interval_days": 7,
+      "status": "pending",
+      "attempt_number": 3,
+      "created_at": "2026-09-11T20:40:48.834Z"
+    },
+    {
+      "id": "rev-1789159543771-w0bp4",
+      "topic_id": "topic-doc-1789159365962-1",
+      "topic_title": "Algorithmic Problem Solving and Flowcharts",
+      "due_date": "2026-09-12",
+      "interval_days": 1,
+      "status": "pending",
+      "attempt_number": 1,
+      "created_at": "2026-09-11T20:45:43.771Z"
+    },
+    {
+      "id": "rev-1789159543771-wnn9n",
+      "topic_id": "topic-doc-1789159365962-1",
+      "topic_title": "Algorithmic Problem Solving and Flowcharts",
+      "due_date": "2026-09-14",
+      "interval_days": 3,
+      "status": "pending",
+      "attempt_number": 2,
+      "created_at": "2026-09-11T20:45:43.771Z"
+    },
+    {
+      "id": "rev-1789159543771-p5geh",
+      "topic_id": "topic-doc-1789159365962-1",
+      "topic_title": "Algorithmic Problem Solving and Flowcharts",
+      "due_date": "2026-09-18",
+      "interval_days": 7,
+      "status": "pending",
+      "attempt_number": 3,
+      "created_at": "2026-09-11T20:45:43.771Z"
+    }
+  ],
+  "user_stats": {
+    "current_streak": 3,
+    "longest_streak": 5,
+    "last_active_date": "2026-09-11",
+    "total_mastered": 0,
+    "total_study_minutes": 45,
+    "total_sessions": 2
+  },
+  "ai_config": {
+    "provider": "openai",
+    "model": "gpt-4o-mini",
+    "base_url": "",
+    "api_key": "",
+    "default_session_minutes": 25,
+    "default_break_minutes": 5
+  }
+}
